@@ -9,5 +9,9 @@ include_directories(.)
 add_executable(SLinecraft
         src/platform/Win64.h
         src/platform/Linux.h
+
+        src/engine/types.h
+        src/engine/Block.cpp
+
         src/main.cpp
     )
