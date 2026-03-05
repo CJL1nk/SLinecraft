@@ -44,12 +44,10 @@ int main() {
     edges[10] = std::pair<std::string, std::string>("B", "F");
     edges[11] = std::pair<std::string, std::string>("D", "H");
 
-    SDL_Window* window;
-    SDL_Renderer* renderer;
+    SDL_Window* window = SDL_CreateWindow("SLinecraft", 800, 800, SDL_WINDOW_OPENGL);;
+    SDL_GLContext ctx = SDL_GL_CreateContext(window);
 
-    SDL_Init(SDL_INIT_VIDEO);
-
-    SDL_CreateWindowAndRenderer("SLinecraft", SCREEN_WIDTH, SCREEN_HEIGHT, 0, &window, &renderer);
+    SDL_GL_SetSwapInterval(1);
 
     while (!quit) {
 
@@ -94,10 +92,10 @@ int main() {
             }
         }
 
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
+        glViewport(0, 0, 800, 800);
 
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        glClearColor(0.1f, 0.1f, 0.15f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         for (int i = 0; i < 12; i++) {
 

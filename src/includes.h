@@ -11,10 +11,12 @@
 
 #include "./engine/types.h"
 #include "./engine/Block.h"
+#include  "./engine/render/glad/include/glad/glad.h"
 
 #include <SDL3/SDL.h>
 #include <iostream>
 #include <unordered_map>
 #include <cmath>
+
 
 #endif //SLINECRAFT_INCLUDES_H
