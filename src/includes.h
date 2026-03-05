@@ -14,5 +14,7 @@
 
 #include <SDL3/SDL.h>
 #include <iostream>
+#include <unordered_map>
+#include <cmath>
 
 #endif //SLINECRAFT_INCLUDES_H
