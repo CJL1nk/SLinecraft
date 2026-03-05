@@ -8,7 +8,7 @@ int main() {
 
     constexpr int SCREEN_WIDTH = 800;
     constexpr int SCREEN_HEIGHT = 800;
-    constexpr int FOV = 80;
+    constexpr int FOV = 130;
 
     bool quit = false;
 
@@ -61,7 +61,7 @@ int main() {
             }
 
             switch (event.type) {
-                case SDL_EVENT_KEY_DOWN:
+                case (SDL_EVENT_KEY_DOWN): {
                     if (event.key.key == SDLK_W) {
                         cameraPos.z -= 0.1f;
                         break;
@@ -90,7 +90,7 @@ int main() {
                         quit = true;
                         break;
                     }
-
+                }
             }
         }
 
