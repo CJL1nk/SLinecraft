@@ -8,16 +8,17 @@ int main() {
 
     constexpr int SCREEN_WIDTH = 800;
     constexpr int SCREEN_HEIGHT = 800;
-    constexpr int FOV = 130;
+    constexpr int FOV = 80;
 
     bool quit = false;
 
     const float FOCAL_LENGTH = 1.f / std::tan(FOV / 2.f);
+    const float SCALE = SCREEN_WIDTH * 0.5f * FOCAL_LENGTH;
 
     std::unordered_map<std::string, Vec3> points;
     std::pair<std::string, std::string> edges[12];
 
-    Vec3 cameraPos = {1, 1, 1};
+    Vec3 cameraPos = {1, 1, -1};
 
     points.emplace("A", Vec3({0, 0, 0}));
     points.emplace("B", Vec3({0, 0, 1}));
@@ -62,19 +63,27 @@ int main() {
             switch (event.type) {
                 case SDL_EVENT_KEY_DOWN:
                     if (event.key.key == SDLK_W) {
-                        cameraPos.x += 0.1f;
+                        cameraPos.z -= 0.1f;
                         break;
                     }
                     if (event.key.key == SDLK_S) {
-                        cameraPos.x -= 0.1f;
+                        cameraPos.z += 0.1f;
                         break;
                     }
                     if (event.key.key == SDLK_D) {
-                        cameraPos.z -= 1.f;
+                        cameraPos.x += 0.1f;
                         break;
                     }
                     if (event.key.key == SDLK_A) {
-                        cameraPos.z += 1.f;
+                        cameraPos.x -= 0.1f;
+                        break;
+                    }
+                    if (event.key.key == SDLK_SPACE) {
+                        cameraPos.y -= 0.1f;
+                        break;
+                    }
+                    if (event.key.key == SDLK_LCTRL) {
+                        cameraPos.y += 0.1f;
                         break;
                     }
                     if (event.key.key == SDLK_Q) {
@@ -102,13 +111,15 @@ int main() {
             point2.y -= cameraPos.y;
             point2.z -= cameraPos.z;
 
+            if (point1.z <= 0 || point2.z <= 0) { continue; }
+
             Vec2 point1Screen = {
-                ((point1.x * 300.f) / point1.z) + SCREEN_WIDTH / 2.f,
-                ((point1.y * 300.f) / point1.z) + SCREEN_HEIGHT / 2.f};
+                (point1.x  / point1.z) * SCALE + SCREEN_WIDTH / 2.f,
+                (point1.y / point1.z) * SCALE + SCREEN_HEIGHT / 2.f};
 
             Vec2 point2Screen = {
-                ((point2.x * 300.f) / point2.z) + SCREEN_WIDTH / 2.f,
-                ((point2.y * 300.f) / point2.z) + SCREEN_HEIGHT / 2.f};
+                (point2.x  / point2.z) * SCALE + SCREEN_WIDTH / 2.f,
+                (point2.y / point2.z) * SCALE + SCREEN_HEIGHT / 2.f};
 
             SDL_RenderLine(renderer, point1Screen.x, point1Screen.y, point2Screen.x, point2Screen.y);
         }
