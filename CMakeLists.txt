@@ -11,13 +11,13 @@ find_package(SDL3 REQUIRED)
 include_directories(.)
 
 add_executable(SLinecraft
-    src/platform/Win64.h
-    src/platform/Linux.h
+        src/platform/Win64.h
+        src/platform/Linux.h
 
-    src/engine/types.h
-    src/engine/Block.cpp
+        src/engine/render/glad/src/glad.c
 
-    src/main.cpp
+        src/engine/types.h
+        src/main.cpp
 )
 
 
