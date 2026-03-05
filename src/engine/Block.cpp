@@ -4,6 +4,7 @@
 
 #include "Block.h"
 
-Block::Block(Position p) {
+Block::Block(const Position& p) {
     this->pos = p;
+    this->hardness = 0;
 }

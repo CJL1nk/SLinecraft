@@ -1,17 +1,24 @@
 cmake_minimum_required(VERSION 4.1)
-project(SLinecraft CXX)
+project(SLinecraft C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Please install this before trying to compile please please please please please please pleas please please please
+# and set up ur paths
+find_package(SDL3 REQUIRED)
+
 include_directories(.)
 
 add_executable(SLinecraft
-        src/platform/Win64.h
-        src/platform/Linux.h
+    src/platform/Win64.h
+    src/platform/Linux.h
 
-        src/engine/types.h
-        src/engine/Block.cpp
+    src/engine/types.h
+    src/engine/Block.cpp
 
-        src/main.cpp
-    )
+    src/main.cpp
+)
+
+
+target_link_libraries(SLinecraft PRIVATE SDL3::SDL3)

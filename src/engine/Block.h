@@ -13,7 +13,7 @@
 class Block {
 
     public:
-        explicit Block(Position p);
+        explicit Block(const Position& p);
         Position pos;
         int hardness;
 };
