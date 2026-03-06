@@ -7,7 +7,7 @@
 #include <iostream>
 #include <stdarg.h>
 
-#include "src/engine/render/glad/include/glad/glad.h"
+#include "../glad/include/glad/glad.h"
 
 // SHADER DEFINITIONS =+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=
 const char* vertexShaderSource = R"(
@@ -60,7 +60,8 @@ unsigned int createShaderProgram(const int count, ...) {
     va_list ap;
     va_start(ap, count);
     for (int i = 0; i <= count; i++) {
-        glAttachShader(shaderProgram, va_arg(ap, unsigned int));
+        const unsigned int shader = va_arg(ap, unsigned int );
+        glAttachShader(shaderProgram, shader);
     }
     va_end(ap);
 

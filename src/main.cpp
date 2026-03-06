@@ -25,14 +25,16 @@ int main() {
        -0.5f, -0.5f, 0.0f,  // bottom left
        -0.5f,  0.5f, 0.0f   // top left
    };
-    unsigned int indices[] = {  // note that we start from 0!
+    unsigned int indices[] = {
         0, 1, 3,   // first triangle
         1, 2, 3    // second triangle
     };
 
-    unsigned int vertexShader = compileShader(GL_VERTEX_SHADER, vertexShaderSource);
-    unsigned int fragmentShader = compileShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
-    unsigned int shaderProgram = createShaderProgram(2, vertexShader, fragmentShader);
+    const unsigned int vertexShader = compileShader(GL_VERTEX_SHADER, vertexShaderSource);
+    const unsigned int fragmentShader = compileShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
+    const unsigned int shaderProgram = createShaderProgram(2, vertexShader, fragmentShader);
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
 
     unsigned int VAO;
     glGenVertexArrays(1, &VAO);
@@ -45,18 +47,11 @@ int main() {
 
     unsigned int EBO;
     glGenBuffers(1, &EBO);
-
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
     glEnableVertexAttribArray(0);
-
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
