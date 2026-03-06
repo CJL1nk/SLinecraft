@@ -11,7 +11,7 @@ extern const char* vertexShaderSource;
 extern const char* fragmentShaderSource;
 
 /**
- * Compiles a GLSL shader given a type and source string
+ * Compiles a GLSL shader given a type and source string.
  * @param shaderType Type of shader to compile (Macros defined in glad.h)
  * @param source String containing source GLSL
  * @return Handle of compiled shader
@@ -19,7 +19,8 @@ extern const char* fragmentShaderSource;
 unsigned int compileShader(uint32_t shaderType, const char* source);
 
 /**
- * Creates and links a GL shader program given shader handles to attach
+ * Creates and links a GL shader program given shader handles to attach.
+ * Does NOT delete shaders after linking program.
  * @param count Number of shaders to attach
  * @param ... Shaders handles to attach
  * @return Handle of linked shader program

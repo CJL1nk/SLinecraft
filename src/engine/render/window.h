@@ -8,7 +8,7 @@
 #include <SDL3/SDL.h>
 
 /**
- * Initializes an SDL Window that uses OpenGL
+ * Initializes an SDL Window that uses OpenGL.
  * @param width Width of window
  * @param height Height on window
  * @param title Window title
