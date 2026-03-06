@@ -23,5 +23,4 @@ add_executable(SLinecraft
         src/main.cpp
 )
 
-
 target_link_libraries(SLinecraft PRIVATE SDL3::SDL3)

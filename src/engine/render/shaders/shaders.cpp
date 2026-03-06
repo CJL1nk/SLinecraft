@@ -5,6 +5,7 @@
 #include "shaders.h"
 
 #include <iostream>
+#include <stdarg.h>
 
 #include "src/engine/render/glad/include/glad/glad.h"
 
@@ -27,7 +28,7 @@ const char* fragmentShaderSource = R"(
 
     void main()
     {
-        FragColor = vec4(1.0,1.0,1.0,1.0);
+        FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
     }
 )";
 // +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=
@@ -45,9 +46,35 @@ unsigned int compileShader(const uint32_t shaderType, const char* source) {
     glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
     if (!success) {
         glGetShaderInfoLog(shader, 512, nullptr, infoLog);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+        std::cout << "ERROR::SHADER::COMPILATION_FAILED\n" << infoLog << std::endl;
     }
 
     return shader;
+}
+
+unsigned int createShaderProgram(const int count, ...) {
+
+    const unsigned int shaderProgram = glCreateProgram();
+
+    // Loop through args and attach shaders
+    va_list ap;
+    va_start(ap, count);
+    for (int i = 0; i <= count; i++) {
+        glAttachShader(shaderProgram, va_arg(ap, unsigned int));
+    }
+    va_end(ap);
+
+    glLinkProgram(shaderProgram);
+
+    // Test if successful
+    int success;
+    char infoLog[512];
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+    if (!success) {
+        glGetProgramInfoLog(shaderProgram, 512, nullptr, infoLog);
+        std::cout << "ERROR::LINK::PROGRAM::FAILED\n" << infoLog << std::endl;
+    }
+
+    return shaderProgram;
 }
 

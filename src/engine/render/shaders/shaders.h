@@ -18,4 +18,12 @@ extern const char* fragmentShaderSource;
  */
 unsigned int compileShader(uint32_t shaderType, const char* source);
 
+/**
+ * Creates and links a GL shader program given shader handles to attach
+ * @param count Number of shaders to attach
+ * @param ... Shaders handles to attach
+ * @return Handle of linked shader program
+ */
+unsigned int createShaderProgram(int count, ...);
+
 #endif //SLINECRAFT_TEMP_H
