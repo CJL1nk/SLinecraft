@@ -6,7 +6,9 @@ Project with some of my friends and I. This will be great
 
 # Resources
 [Server](https://discord.gg/kuXQmtms77)
+
 https://learnopengl.com/
+
 https://wiki.libsdl.org/SDL3/FrontPage
 
 # Commit Rules
