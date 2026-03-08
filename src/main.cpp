@@ -20,7 +20,6 @@ int main() {
 
     SDL_GL_SetSwapInterval(1);
 
-
     float vertices[] = {
         // positions         // colors
         0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // bottom right
@@ -73,10 +72,6 @@ int main() {
             }
         }
 
-        float timeValue = SDL_GetTicks() / 100.f;
-        float greenValue = (std::sin(timeValue) / 2.0f) + 0.5f;
-        int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
-        glUniform4f(vertexColorLocation, 1.0f, greenValue, 0.0f, 1.0f);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
