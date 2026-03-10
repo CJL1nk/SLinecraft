@@ -9,11 +9,7 @@
 #include "./engine/render/glad/include/glad/glad.h"
 #include "./engine/render/window.h"
 #include "./engine/render/shaders/shaders.h"
-#include "./platform/platform.h"
-
-// For stb_image stuff
-#define STB_IMAGE_IMPLEMENTATION'
-#include "./engine/render/stb/stb_image.h"
+#include "./engine/render/texture.h"
 
 int main() {
 
@@ -25,12 +21,17 @@ int main() {
 
     SDL_GL_SetSwapInterval(1);
 
-    float vertices[] = {
-        // positions         // colors
-        0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // bottom right
-       -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // bottom left
-        0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // top
+    constexpr float vertices[] = {
+        // positions          // colors           // texture coords
+        0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
+        0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
+       -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
+       -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left
    };
+    const unsigned int indices[] = {
+        0, 1, 3,
+        1, 2, 3
+    };
     float texCoords[] = {
         0.0f, 0.0f,  // lower-left corner
         1.0f, 0.0f,  // lower-right corner
@@ -52,37 +53,18 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), nullptr);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), nullptr);
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3* sizeof(float)));
     glEnableVertexAttribArray(1);
 
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+
     // Texutre
-    unsigned int texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    // set the texture wrapping/filtering options (on the currently bound texture object)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    // Load image data into buffer
-    int width, height, nrChannels;
-#ifdef Linux
-    unsigned char* data = stbi_load("../textures/wall.jpg", &width, &height, &nrChannels, 0);
-#endif
-#ifdef Win64
-    unsigned char* data = stbi_load("..\\textures\\wall.jpg", &width, &height, &nrChannels, 0);
-#endif
-
-    if (data) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-
-    stbi_image_free(data);
+    unsigned int texture = loadTexture2D("../textures/wall.jpg");
+    bindTexture2D(texture);
 
     // Wireframe mode
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -112,7 +94,8 @@ int main() {
         glUseProgram(shaderProgram);
 
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        //glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, indices);
 
         SDL_GL_SwapWindow(window);
         SDL_Delay(16);
