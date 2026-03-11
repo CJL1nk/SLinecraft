@@ -4,14 +4,12 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 
-#include <filesystem>
-
 #include "./glad/include/glad/glad.h"
 #include "./stb/stb_image.h"
+#include "../../platform/platform.h"
+#include "../../utils/utils.h"
 
 unsigned int loadTexture2D(const char* filename) {
-
-    const std::filesystem::path path(filename);
 
     unsigned int texture;
     glGenTextures(1, &texture);
@@ -25,7 +23,14 @@ unsigned int loadTexture2D(const char* filename) {
 
     // Load image data into buffer
     int width, height, nrChannels;
-    unsigned char* data = stbi_load(path.string().c_str(), &width, &height, &nrChannels, 0);
+
+#ifdef Linux
+    unsigned char* data = stbi_load(pathToLinux(filename).c_str(), &width, &height, &nrChannels, 0);
+#endif
+#ifdef Win64
+    unsigned char* data = stbi_load(pathToWindows(filename).c_str(), &width, &height, &nrChannels, 0);
+#endif
+
 
     if (data) {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);

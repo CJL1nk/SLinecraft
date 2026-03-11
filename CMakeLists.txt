@@ -21,6 +21,8 @@ add_executable(SLinecraft
         src/engine/render/texture.cpp
         src/engine/render/window.cpp
 
+        src/utils/utils.cpp
+
         src/main.cpp
 )
 
