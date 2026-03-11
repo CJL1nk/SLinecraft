@@ -32,11 +32,6 @@ int main() {
         0, 1, 3,
         1, 2, 3
     };
-    float texCoords[] = {
-        0.0f, 0.0f,  // lower-left corner
-        1.0f, 0.0f,  // lower-right corner
-        0.5f, 1.0f   // top-center corner
-    };
 
     const unsigned int vertexShader = compileShader(GL_VERTEX_SHADER, vertexShaderSource);
     const unsigned int fragmentShader = compileShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
@@ -63,7 +58,7 @@ int main() {
     glEnableVertexAttribArray(2);
 
     // Texutre
-    unsigned int texture = loadTexture2D("../textures/wall.jpg");
+    const unsigned int texture = loadTexture2D("../textures/wall.jpg");
     bindTexture2D(texture);
 
     // Wireframe mode

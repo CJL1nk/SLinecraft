@@ -40,7 +40,7 @@ const char* fragmentShaderSource = R"(
 
     void main()
     {
-        FragColor = texture(ourTexture, TexCoord);
+        FragColor = texture(ourTexture, TexCoord) * vec4(ourColor, 1.0);
     }
 )";
 // +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=

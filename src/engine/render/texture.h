@@ -13,9 +13,10 @@
 unsigned int loadTexture2D(const char* filename);
 
 /**
- * Binds a texture for drawing
+ * Binds a texture for drawing.
+ * This function will very likely just get removed because it is a wrapper over a single OpenGL function
  * @param handle Handle of texture to bind
  */
-void bindTexture2D(unsigned int handle);
+inline void bindTexture2D(unsigned int handle);
 
 #endif //SLINECRAFT_TEXTURE_H
