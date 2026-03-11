@@ -62,7 +62,7 @@ int main() {
     bindTexture2D(texture);
 
     // Wireframe mode
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     while (!quit) {
 
