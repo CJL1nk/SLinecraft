@@ -58,7 +58,7 @@ int main() {
     glEnableVertexAttribArray(2);
 
     // Texutre
-    const unsigned int texture = loadTexture2D("../textures/wall.jpg");
+    const unsigned int texture = loadTexture2D("../textures/tex.png");
     bindTexture2D(texture);
 
     // Wireframe mode
