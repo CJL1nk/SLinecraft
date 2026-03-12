@@ -10,6 +10,7 @@
 #include "./engine/render/window.h"
 #include "./engine/render/shaders/shaders.h"
 #include "./engine/render/Texture.h"
+#include "./engine/render/Shader.h"
 
 int main() {
 
@@ -33,11 +34,13 @@ int main() {
         1, 2, 3
     };
 
-    const unsigned int vertexShader = compileShader(GL_VERTEX_SHADER, vertexShaderSource);
-    const unsigned int fragmentShader = compileShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
-    const unsigned int shaderProgram = createShaderProgram(2, vertexShader, fragmentShader);
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
+    Shader vertexShader(vertexShaderSource, GL_VERTEX_SHADER);
+    Shader fragmentShader(fragmentShaderSource, GL_FRAGMENT_SHADER);
+    vertexShader.compile();
+    fragmentShader.compile();
+    const unsigned int shaderProgram = createShaderProgram(2, vertexShader.getHandle(), fragmentShader.getHandle());
+    vertexShader.deleteShader();
+    fragmentShader.deleteShader();
 
     unsigned int VAO;
     glGenVertexArrays(1, &VAO);

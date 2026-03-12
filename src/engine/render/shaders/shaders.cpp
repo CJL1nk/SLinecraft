@@ -46,24 +46,6 @@ const char* fragmentShaderSource = R"(
 )";
 // +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=
 
-unsigned int compileShader(const uint32_t shaderType, const char* source) {
-
-    // Compile shader
-    const unsigned int shader = glCreateShader(shaderType);
-    glShaderSource(shader, 1, &source, nullptr);
-    glCompileShader(shader);
-
-    // Test if successful
-    int  success;
-    char infoLog[512];
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-        glGetShaderInfoLog(shader, 512, nullptr, infoLog);
-        std::cout << "ERROR::SHADER::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
-
-    return shader;
-}
 
 unsigned int createShaderProgram(const int count, ...) {
 

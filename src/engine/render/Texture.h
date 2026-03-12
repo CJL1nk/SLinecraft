@@ -8,17 +8,16 @@
 #include "./glad/include/glad/glad.h"
 
 class Texture {
-
     public:
         /**
          * Initializes (but does not load) a texture object
          * @param filename Path to texture file
-         * @param format
+         * @param format Color format of texture (GL_RGB, GL_RGBA, ...)
          */
         Texture(const char* filename, const GLuint format) : filename(filename), format(format) {};
 
         /**
-        * Loads a texture into the GPU resources
+        * Loads a texture into the GPU resources and sets the handle
         */
         void load();
         /**

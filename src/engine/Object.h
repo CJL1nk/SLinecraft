@@ -12,8 +12,9 @@ class Object {
         Object();
 
     private:
-        float origin[];
-
+        float origin[3];
+        const float* vertices;
+        const float* indices;
 };
 
 
