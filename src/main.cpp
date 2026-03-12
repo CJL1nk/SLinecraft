@@ -9,7 +9,7 @@
 #include "./engine/render/glad/include/glad/glad.h"
 #include "./engine/render/window.h"
 #include "./engine/render/shaders/shaders.h"
-#include "./engine/render/texture.h"
+#include "./engine/render/Texture.h"
 
 int main() {
 
@@ -65,14 +65,16 @@ int main() {
     glUseProgram(shaderProgram);
 
     // Texutre
-    const unsigned int texture1 = loadTexture2D("../textures/wall.jpg", GL_RGB);
-    const unsigned int texture2 = loadTexture2D("..\\textures\\awesomeface.png", GL_RGBA);
+    Texture texture1("../textures/wall.jpg", GL_RGB);
+    Texture texture2("..\\textures\\awesomeface.png", GL_RGBA);
+    texture1.load();
+    texture2.load();
 
     glActiveTexture(GL_TEXTURE0);
-    bindTexture2D(texture1);
+    texture1.bind();
 
     glActiveTexture(GL_TEXTURE1);
-    bindTexture2D(texture2);
+    texture2.bind();
 
     glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0); // set it manually
     glUniform1i(glGetUniformLocation(shaderProgram, "texture2"), 1); // set it manually

@@ -22,3 +22,4 @@ https://wiki.libsdl.org/SDL3/FrontPage
 - All functions written should be documented at the top in [Doxygen](https://www.doxygen.nl/manual/docblocks.html) style comments, above their definition in the **header files**. Ensure to provide description on what the function takes as arguments and returns.
 - Please try to at least make sure the codebase compiles before pushing. This isn't REALLY necessary, but will make everyone else's lives easier for testing.
 - Include what you use. I don't care if it compiles on your machine without including it.
+- Please make all class filenames (and names) start with a capital letter so files declaring an object can be more easily identified.

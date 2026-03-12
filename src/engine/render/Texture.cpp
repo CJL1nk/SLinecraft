@@ -4,16 +4,16 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 
-#include "./glad/include/glad/glad.h"
+#include "./Texture.h"
 #include "./stb/stb_image.h"
 #include "../../platform/platform.h"
 #include "../../utils/utils.h"
 
-unsigned int loadTexture2D(const char* filename, unsigned int format) {
+void Texture::load() {
 
-    unsigned int texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    unsigned int textureHandle;
+    glGenTextures(1, &textureHandle);
+    glBindTexture(GL_TEXTURE_2D, textureHandle);
 
     // set the texture wrapping/filtering options (on the currently bound texture object)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -26,23 +26,26 @@ unsigned int loadTexture2D(const char* filename, unsigned int format) {
 
     stbi_set_flip_vertically_on_load(true);  // So image isn't upside down
 #ifdef Linux
-    unsigned char* data = stbi_load(pathToLinux(filename).c_str(), &width, &height, &nrChannels, 0);
+    unsigned char* data = stbi_load(pathToLinux(this->filename).c_str(), &width, &height, &nrChannels, 0);
 #endif
 #ifdef Win64
-    unsigned char* data = stbi_load(pathToWindows(filename).c_str(), &width, &height, &nrChannels, 0);
+    unsigned char* data = stbi_load(pathToWindows(this->filename).c_str(), &width, &height, &nrChannels, 0);
 #endif
 
-
     if (data) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, this->format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
 
     stbi_image_free(data);
 
-    return texture;
+    this->handle = textureHandle;
 }
 
-void bindTexture2D(const unsigned int handle) {
-    glBindTexture(GL_TEXTURE_2D, handle);
+void Texture::bind() const {
+    glBindTexture(GL_TEXTURE_2D, this->handle);
+}
+
+GLuint Texture::getHandle() const {
+    return this->handle;
 }

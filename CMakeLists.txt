@@ -18,7 +18,7 @@ add_executable(SLinecraft
 
         src/engine/render/stb/stb_image.h
 
-        src/engine/render/texture.cpp
+        src/engine/render/Texture.cpp
         src/engine/render/window.cpp
 
         src/utils/utils.cpp
