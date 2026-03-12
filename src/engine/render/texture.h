@@ -8,9 +8,10 @@
 /**
  * Loads a texture into the GPU resources
  * @param filename Path of texture to load
+ * @param format Color format of provided image (GL_RGB, GL_RGBA, ...)
  * @return Handle (ID) of loaded texture
  */
-unsigned int loadTexture2D(const char* filename);
+unsigned int loadTexture2D(const char* filename, unsigned int format);
 
 /**
  * Binds a texture for drawing.

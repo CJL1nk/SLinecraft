@@ -9,7 +9,7 @@
 #include "../../platform/platform.h"
 #include "../../utils/utils.h"
 
-unsigned int loadTexture2D(const char* filename) {
+unsigned int loadTexture2D(const char* filename, unsigned int format) {
 
     unsigned int texture;
     glGenTextures(1, &texture);
@@ -24,6 +24,7 @@ unsigned int loadTexture2D(const char* filename) {
     // Load image data into buffer
     int width, height, nrChannels;
 
+    stbi_set_flip_vertically_on_load(true);  // So image isn't upside down
 #ifdef Linux
     unsigned char* data = stbi_load(pathToLinux(filename).c_str(), &width, &height, &nrChannels, 0);
 #endif
@@ -33,7 +34,7 @@ unsigned int loadTexture2D(const char* filename) {
 
 
     if (data) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
 

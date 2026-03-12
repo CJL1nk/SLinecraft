@@ -48,6 +48,11 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+    unsigned int EBO;
+    glGenBuffers(1, &EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), nullptr);
     glEnableVertexAttribArray(0);
 
@@ -57,9 +62,20 @@ int main() {
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
+    glUseProgram(shaderProgram);
+
     // Texutre
-    const unsigned int texture = loadTexture2D("../textures/tex.png");
-    bindTexture2D(texture);
+    const unsigned int texture1 = loadTexture2D("../textures/wall.jpg", GL_RGB);
+    const unsigned int texture2 = loadTexture2D("..\\textures\\awesomeface.png", GL_RGBA);
+
+    glActiveTexture(GL_TEXTURE0);
+    bindTexture2D(texture1);
+
+    glActiveTexture(GL_TEXTURE1);
+    bindTexture2D(texture2);
+
+    glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0); // set it manually
+    glUniform1i(glGetUniformLocation(shaderProgram, "texture2"), 1); // set it manually
 
     // Wireframe mode
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -90,7 +106,7 @@ int main() {
 
         glBindVertexArray(VAO);
         //glDrawArrays(GL_TRIANGLES, 0, 3);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, indices);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
         SDL_GL_SwapWindow(window);
         SDL_Delay(16);
