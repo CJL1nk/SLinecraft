@@ -9,6 +9,10 @@
 #include "./glad/include/glad/glad.h"
 #include "./Shader.h"
 
+/**
+ * Class holding an OpenGL shader program and its info
+ * @note Shader program is NOT deleted on function scope exit, please call .deleteProgram() when it is done being used
+ */
 class ShaderProgram {
 
     public:

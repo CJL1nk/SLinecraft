@@ -7,7 +7,7 @@
 #include "Shader.h"
 
 Shader::~Shader() {
-    glDeleteShader(this->handle);
+    //glDeleteShader(this->handle);
 }
 
 void Shader::compile() {

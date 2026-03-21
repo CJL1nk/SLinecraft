@@ -7,7 +7,7 @@
 #include <iostream>
 
 ShaderProgram::~ShaderProgram() {
-    glDeleteProgram(this->handle);
+    //glDeleteProgram(this->handle);
 }
 
 void ShaderProgram::add(const Shader* shader) {

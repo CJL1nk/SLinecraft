@@ -7,6 +7,10 @@
 
 #include "./glad/include/glad/glad.h"
 
+/**
+ * Class holding an OpenGL texture and its info
+ * @note Texture is NOT deleted on function scope exit, please call .deleteTexture() when it is done being used
+ */
 class Texture {
     public:
         /**
@@ -20,11 +24,18 @@ class Texture {
         * Loads a texture into the GPU resources and sets the handle
         */
         void load();
+
         /**
         * Binds a texture for drawing.
         * This function will very likely just get removed because it is a wrapper over a single OpenGL function
         */
         void bind() const;
+
+        /**
+         * Deletes the texture from memory
+         */
+        void deleteTexture() const;
+
         /**
          * Returns the handle of current texture object
          * @return Handle of current texture object

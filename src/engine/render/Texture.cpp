@@ -38,12 +38,15 @@ void Texture::load() {
     }
 
     stbi_image_free(data);
-
     this->handle = textureHandle;
 }
 
 void Texture::bind() const {
     glBindTexture(GL_TEXTURE_2D, this->handle);
+}
+
+void Texture::deleteTexture() const {
+    glDeleteTextures(1, &this->handle);
 }
 
 GLuint Texture::getHandle() const {

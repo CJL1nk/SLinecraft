@@ -122,6 +122,8 @@ int main() {
     }
 
     program.deleteProgram();
+    texture1.deleteTexture();
+    texture2.deleteTexture();
     SDL_DestroyWindow(window);
     SDL_Quit();
 
