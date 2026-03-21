@@ -6,6 +6,10 @@
 #include <iostream>
 #include <SDL3/SDL.h>
 
+#include "./engine/render/glm/glm.hpp"
+#include "./engine/render/glm/gtc/matrix_transform.hpp"
+#include "./engine/render/glm/gtc/type_ptr.hpp"
+
 #include "./engine/render/glad/include/glad/glad.h"
 #include "./engine/render/window.h"
 #include "./engine/render/shaders/shaders.h"
@@ -34,6 +38,12 @@ int main() {
         0, 1, 3,
         1, 2, 3
     };
+
+    float degs = 1.f;
+
+    glm::mat4 trans = glm::mat4(1.0f);
+    trans = glm::rotate(trans, glm::radians(degs), glm::vec3(0.0, 0.0, 1.0));
+    trans = glm::scale(trans, glm::vec3(1.5, 1.5, 0.5));
 
     Shader vertexShader(vertexShaderSource, GL_VERTEX_SHADER);
     Shader fragmentShader(fragmentShaderSource, GL_FRAGMENT_SHADER);
@@ -74,18 +84,15 @@ int main() {
 
     // Texutre
     Texture texture1("../textures/tex.png", GL_RGB);
-    Texture texture2("..\\textures\\tex.png", GL_RGBA);
     texture1.load();
-    texture2.load();
 
     glActiveTexture(GL_TEXTURE0);
     texture1.bind();
 
-    glActiveTexture(GL_TEXTURE1);
-    texture2.bind();
-
     glUniform1i(glGetUniformLocation(program.getHandle(), "texture1"), 0); // set it manually
-    glUniform1i(glGetUniformLocation(program.getHandle(), "texture2"), 1); // set it manually
+
+    const unsigned int transformLoc = glGetUniformLocation(program.getHandle(), "transform");
+    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
     // Wireframe mode
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -105,6 +112,9 @@ int main() {
                         quit = true;
                         break;
                     }
+                    if (event.key.key == SDLK_R) {
+                        break;
+                    }
                 }
             }
         }
@@ -117,13 +127,15 @@ int main() {
         //glDrawArrays(GL_TRIANGLES, 0, 3);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
+        trans = glm::rotate(trans, glm::radians(degs), glm::vec3(0.0, 0.0, 1.0));
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
         SDL_GL_SwapWindow(window);
         SDL_Delay(16);
     }
 
     program.deleteProgram();
     texture1.deleteTexture();
-    texture2.deleteTexture();
     SDL_DestroyWindow(window);
     SDL_Quit();
 
