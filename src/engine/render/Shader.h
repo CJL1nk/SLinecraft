@@ -26,6 +26,7 @@ class Shader {
          * Deletes a shader from GPU memory (safe to call after shader has been compiled)
          */
         void deleteShader();
+
         /**
          * Returns the handle of current shader object
          * @return Handle of current shader object

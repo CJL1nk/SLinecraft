@@ -11,6 +11,7 @@
 #include "./engine/render/shaders/shaders.h"
 #include "./engine/render/Texture.h"
 #include "./engine/render/Shader.h"
+#include "./engine/render/ShaderProgram.h"
 
 int main() {
 
@@ -38,7 +39,13 @@ int main() {
     Shader fragmentShader(fragmentShaderSource, GL_FRAGMENT_SHADER);
     vertexShader.compile();
     fragmentShader.compile();
-    const unsigned int shaderProgram = createShaderProgram(2, vertexShader.getHandle(), fragmentShader.getHandle());
+
+    ShaderProgram program;
+    program.add(&vertexShader);
+    program.add(&fragmentShader);
+    program.link();
+    program.use();
+
     vertexShader.deleteShader();
     fragmentShader.deleteShader();
 
@@ -65,11 +72,9 @@ int main() {
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
-    glUseProgram(shaderProgram);
-
     // Texutre
-    Texture texture1("../textures/wall.jpg", GL_RGB);
-    Texture texture2("..\\textures\\awesomeface.png", GL_RGBA);
+    Texture texture1("../textures/tex.png", GL_RGB);
+    Texture texture2("..\\textures\\tex.png", GL_RGBA);
     texture1.load();
     texture2.load();
 
@@ -79,8 +84,8 @@ int main() {
     glActiveTexture(GL_TEXTURE1);
     texture2.bind();
 
-    glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0); // set it manually
-    glUniform1i(glGetUniformLocation(shaderProgram, "texture2"), 1); // set it manually
+    glUniform1i(glGetUniformLocation(program.getHandle(), "texture1"), 0); // set it manually
+    glUniform1i(glGetUniformLocation(program.getHandle(), "texture2"), 1); // set it manually
 
     // Wireframe mode
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -104,10 +109,9 @@ int main() {
             }
         }
 
-
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-        glUseProgram(shaderProgram);
+        program.use();
 
         glBindVertexArray(VAO);
         //glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -117,6 +121,7 @@ int main() {
         SDL_Delay(16);
     }
 
+    program.deleteProgram();
     SDL_DestroyWindow(window);
     SDL_Quit();
 

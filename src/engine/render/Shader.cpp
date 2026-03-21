@@ -3,7 +3,6 @@
 //
 
 #include <iostream>
-#include <cstdarg>
 
 #include "Shader.h"
 
@@ -35,31 +34,4 @@ void Shader::deleteShader() {
 
 GLuint Shader::getHandle() const {
     return this->handle;
-}
-
-unsigned int createShaderProgram(const int count, ...) {
-
-    const unsigned int shaderProgram = glCreateProgram();
-
-    // Loop through args and attach shaders
-    va_list ap;
-    va_start(ap, count);
-    for (int i = 0; i < count; i++) {
-        const unsigned int shader = va_arg(ap, unsigned int );
-        glAttachShader(shaderProgram, shader);
-    }
-    va_end(ap);
-
-    glLinkProgram(shaderProgram);
-
-    // Test if successful
-    int success;
-    char infoLog[512];
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-    if (!success) {
-        glGetProgramInfoLog(shaderProgram, 512, nullptr, infoLog);
-        std::cout << "ERROR::LINK::PROGRAM::FAILED\n" << infoLog << std::endl;
-    }
-
-    return shaderProgram;
 }
