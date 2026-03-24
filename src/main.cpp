@@ -6,11 +6,12 @@
 #include <iostream>
 #include <SDL3/SDL.h>
 
+#include "./engine/Object.h"
 #include "./engine/render/glm/glm.hpp"
 #include "./engine/render/glm/gtc/matrix_transform.hpp"
 #include "./engine/render/glm/gtc/type_ptr.hpp"
-
 #include "./engine/render/glad/include/glad/glad.h"
+
 #include "./engine/render/window.h"
 #include "./engine/render/shaders/shaders.h"
 #include "./engine/render/Texture.h"
@@ -21,29 +22,69 @@ int main() {
 
     constexpr uint16_t SCREEN_WIDTH = 800;
     constexpr uint16_t SCREEN_HEIGHT = 800;
-    bool quit = false;
+    constexpr float ASPECT_RATIO = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
+    const float FOV = glm::radians(45.0f);
 
     SDL_Window* window = initWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Slinecraft");
 
+    glm::mat4 proj = glm::perspective(FOV, ASPECT_RATIO, 0.1f, 100.0f);
+
     SDL_GL_SetSwapInterval(1);
 
-    constexpr float vertices[] = {
-        // positions          // colors           // texture coords
-        0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
-        0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
-       -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
-       -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left
-   };
-    const unsigned int indices[] = {
-        0, 1, 3,
-        1, 2, 3
+    float vertices[] = {
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     };
 
-    float degs = 1.f;
+    Texture texture1("../textures/wall.jpg", GL_RGB);
+    texture1.load();
 
-    glm::mat4 trans = glm::mat4(1.0f);
-    trans = glm::rotate(trans, glm::radians(degs), glm::vec3(0.0, 0.0, 1.0));
-    trans = glm::scale(trans, glm::vec3(1.5, 1.5, 0.5));
+    Object cube1(vertices, glm::vec3(0.0f, 0.0f, 0.0f), texture1);
+
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.00f, 0.0f));
+
+    glm::mat4 view = glm::mat4(1.0f);
+    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
 
     Shader vertexShader(vertexShaderSource, GL_VERTEX_SHADER);
     Shader fragmentShader(fragmentShaderSource, GL_FRAGMENT_SHADER);
@@ -68,35 +109,30 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    unsigned int EBO;
-    glGenBuffers(1, &EBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), nullptr);
+    glVertexAttribPointer(0, 3,GL_FLOAT, GL_FALSE, 5 * sizeof(float), nullptr);
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3* sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-
-    // Texutre
-    Texture texture1("../textures/tex.png", GL_RGB);
-    texture1.load();
 
     glActiveTexture(GL_TEXTURE0);
     texture1.bind();
 
     glUniform1i(glGetUniformLocation(program.getHandle(), "texture1"), 0); // set it manually
 
-    const unsigned int transformLoc = glGetUniformLocation(program.getHandle(), "transform");
-    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+    const int modelLoc = glGetUniformLocation(program.getHandle(), "model");
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+    const int projLoc = glGetUniformLocation(program.getHandle(), "projection");
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(proj));
+    const int viewLoc = glGetUniformLocation(program.getHandle(), "view");
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(view));
 
     // Wireframe mode
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+    glEnable(GL_DEPTH_TEST);
+
+    bool quit = false;
     while (!quit) {
 
         SDL_Event event;
@@ -112,9 +148,6 @@ int main() {
                         quit = true;
                         break;
                     }
-                    if (event.key.key == SDLK_R) {
-                        break;
-                    }
                 }
             }
         }
@@ -124,14 +157,18 @@ int main() {
         program.use();
 
         glBindVertexArray(VAO);
-        //glDrawArrays(GL_TRIANGLES, 0, 3);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
-        trans = glm::rotate(trans, glm::radians(degs), glm::vec3(0.0, 0.0, 1.0));
-        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(proj));
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
         SDL_GL_SwapWindow(window);
         SDL_Delay(16);
+
+        model = glm::rotate(model, 0.02f * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
     program.deleteProgram();

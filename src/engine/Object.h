@@ -5,16 +5,19 @@
 #ifndef SLINECRAFT_OBJECT_H
 #define SLINECRAFT_OBJECT_H
 
+#include "./render/glm/vec3.hpp"
+#include "./render/Texture.h"
+
 
 class Object {
 
     public:
-        Object();
+        Object(const float* vertices, glm::vec3 worldPos, Texture& texture) : vertices(vertices), worldPos(worldPos), texture(&texture){}
 
     private:
-        float origin[3];
         const float* vertices;
-        const float* indices;
+        glm::vec3 worldPos;
+        Texture* texture;
 };
 
 
