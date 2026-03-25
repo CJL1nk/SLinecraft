@@ -3,6 +3,7 @@
 //
 
 #include <algorithm>
+
 #include "utils.h"
 
 
@@ -10,12 +11,12 @@ std::string pathToLinux(const char* path) {
     std::string newPath = path;
     std::replace(newPath.begin(), newPath.end(), '\\', '/');
 
-    return newPath.c_str();
+    return newPath;
 }
 
 std::string pathToWindows(const char* path) {
     std::string newPath = path;
     std::replace(newPath.begin(), newPath.end(), '/', '\\');
 
-    return newPath.c_str();
+    return newPath;
 }
