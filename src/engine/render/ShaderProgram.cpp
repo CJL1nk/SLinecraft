@@ -6,13 +6,13 @@
 
 #include <iostream>
 
-ShaderProgram::~ShaderProgram() {
+ShaderProgram::~ShaderProgram() = default;/*{
     //glDeleteProgram(this->handle);
-}
+}*/
 
-void ShaderProgram::add(const Shader* shader) {
-    this->shaders.push_back(shader->getHandle());
-    glAttachShader(this->handle, shader->getHandle());
+void ShaderProgram::add(const Shader& shader) {
+    this->shaders.push_back(shader.getHandle());
+    glAttachShader(this->handle, shader.getHandle());
 }
 
 void ShaderProgram::add(const GLuint shaderHandle) {

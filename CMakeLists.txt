@@ -20,6 +20,9 @@ add_executable(SLinecraft
         src/engine/render/Texture.cpp
         src/engine/render/Shader.cpp
         src/engine/render/window.cpp
+        src/engine/render/Camera.cpp
+
+        src/engine/Object.cpp
 
         src/utils/utils.cpp
 

@@ -26,7 +26,7 @@ class ShaderProgram {
          * Adds a shader object into a program
          * @param shader Shader to add
          */
-        void add(const Shader* shader);
+        void add(const Shader& shader);
         /**
          * Adds a shader into the program by handle
          * @param shaderHandle Shader handle to add
