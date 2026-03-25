@@ -174,8 +174,13 @@ int main() {
         SDL_Delay(16);
     }
 
+    // Delete all textures when done with them please!!!!!!!!!!!!
+    for (int i = 0; i < objects.size(); i++) {
+        Object& current = objects[i];
+        current.getTexture()->deleteTexture();
+    }
+
     program.deleteProgram();
-    texture1->deleteTexture();
     SDL_DestroyWindow(window);
     SDL_Quit();
 

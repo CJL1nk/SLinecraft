@@ -28,6 +28,8 @@ class Object {
 
         [[nodiscard]] glm::mat4 getModelMatrix() const;
 
+        [[nodiscard]] Texture* getTexture() const;
+
     private:
         const float* vertices;
 

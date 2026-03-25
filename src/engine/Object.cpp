@@ -19,3 +19,6 @@ glm::mat4 Object::getModelMatrix() const {
     return this->modelMatrix;
 }
 
+Texture* Object::getTexture() const {
+    return this->texture.get();
+}
