@@ -15,6 +15,8 @@ class Camera {
 
         void move(const glm::vec3& direction);
 
+        void rotate(float degrees, const glm::vec3& axis);
+
         [[nodiscard]] glm::mat4 getProjection() const;
         [[nodiscard]] glm::mat4 getView() const;
 
@@ -23,6 +25,7 @@ class Camera {
         glm::mat4 view;
 
         glm::vec3 position;
+        glm::vec3 rotation;
 };
 
 

@@ -151,6 +151,36 @@ int main() {
                         quit = true;
                         break;
                     }
+                    if (event.key.key == SDLK_W) {
+                        camera.move(glm::vec3(0.0f, 0.0f, 0.05f));
+                    }
+                    if (event.key.key == SDLK_S) {
+                        camera.move(glm::vec3(0.0f, 0.0f, -0.05f));
+                    }
+                    if (event.key.key == SDLK_A) {
+                        camera.move(glm::vec3(0.05f, 0.0f, 0.0f));
+                    }
+                    if (event.key.key == SDLK_D) {
+                        camera.move(glm::vec3(-0.05f, 0.0f, 0.0f));
+                    }
+                    if (event.key.key == SDLK_SPACE) {
+                        camera.move(glm::vec3(0.0f, -0.05f, 0.0f));
+                    }
+                    if (event.key.key == SDLK_LCTRL) {
+                        camera.move(glm::vec3(0.0f, 0.05f, 0.0f));
+                    }
+                    if (event.key.key == SDLK_RIGHT) {
+                        camera.rotate(0.05f, glm::vec3(0.0f, 1.0f, 0.0f));
+                    }
+                    if (event.key.key == SDLK_LEFT) {
+                        camera.rotate(0.05f, glm::vec3(0.0f, -1.0f, 0.0f));
+                    }
+                    if (event.key.key == SDLK_UP) {
+                        camera.rotate(0.05f, glm::vec3(1.0f, 0.0f, 0.0f));
+                    }
+                    if (event.key.key == SDLK_DOWN) {
+                        camera.rotate(-0.05f, glm::vec3(1.0f, 0.0f, 0.0f));
+                    }
                 }
             }
         }

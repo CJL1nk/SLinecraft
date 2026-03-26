@@ -17,6 +17,10 @@ void Camera::move(const glm::vec3& direction) {
     this->view = glm::translate(this->view, direction);
 }
 
+void Camera::rotate(const float degrees, const glm::vec3& axis) {
+    this->view = glm::rotate(this->view, degrees, axis);
+}
+
 glm::mat4 Camera::getProjection() const {
     return this->projection;
 }
