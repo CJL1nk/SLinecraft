@@ -263,16 +263,16 @@ int main() {
             camera.move(-camera.getUp() * cameraVelocity);
         }
         if (RIGHT) {
-            camera.rotate(0.0f, 2.0f);
+            camera.rotate(0.0f, 1.0f * deltaSeconds);
         }
         if (LEFT) {
-            camera.rotate(0.0f, -2.0f);
+            camera.rotate(0.0f, -1.0f * deltaSeconds);
         }
         if (UP) {
-            camera.rotate(-2.0f, 0.0f);
+            camera.rotate(-1.0f * deltaSeconds, 0.0f);
         }
         if (DOWN) {
-            camera.rotate(2.0f, 0.0f);
+            camera.rotate(1.0f * deltaSeconds, 0.0f);
         }
 
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(camera.getProjection()));
