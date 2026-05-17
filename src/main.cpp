@@ -22,17 +22,22 @@ int main() {
     constexpr uint16_t SCREEN_WIDTH = 800;
     constexpr uint16_t SCREEN_HEIGHT = 800;
     constexpr float ASPECT_RATIO = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
-    constexpr float FOV = glm::radians(60.0f);
+    constexpr float FOV = 60.0f; // Degrees
 
     SDL_Window* window = initWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Slinecraft");
 
     Camera camera(FOV, ASPECT_RATIO, 0.1f, 100.0f);
+    const float cameraSpeed = 0.05f;
+
     camera.move(glm::vec3(0.0f, 0.0f, -3.0f));
+
+    signed long int deltaTime = 0;
+    signed long int  lastFrame = 0;
 
     SDL_GL_SetSwapInterval(1);
 
     // Textures and Shaders ---------------------------------------------------------------------------------
-    std::shared_ptr<Texture> texture1 = std::make_shared<Texture>("../textures/tex.png", GL_RGB);
+    std::shared_ptr<Texture> texture1 = std::make_shared<Texture>("../textures/dirt.png", GL_RGB);
     texture1->load();
 
     glActiveTexture(GL_TEXTURE0);
@@ -100,16 +105,12 @@ int main() {
         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     };
 
-    objects.emplace_back(vertices, glm::vec3( 0.0f,  0.0f,  0.0f), texture1);
-    objects.emplace_back(vertices, glm::vec3( 2.0f,  5.0f, -15.0f), texture1);
-    objects.emplace_back(vertices, glm::vec3(-1.5f, -2.2f, -2.5f), texture1);
-    objects.emplace_back(vertices, glm::vec3(-3.8f, -2.0f, -12.3f), texture1);
-    objects.emplace_back(vertices, glm::vec3( 2.4f, -0.4f, -3.5f), texture1);
-    objects.emplace_back(vertices, glm::vec3(-1.7f,  3.0f, -7.5f), texture1);
-    objects.emplace_back(vertices, glm::vec3( 1.3f, -2.0f, -2.5f), texture1);
-    objects.emplace_back(vertices, glm::vec3( 1.5f,  2.0f, -2.5f), texture1);
-    objects.emplace_back(vertices, glm::vec3( 1.5f,  0.2f, -1.5f), texture1);
-    objects.emplace_back(vertices, glm::vec3(-1.3f,  1.0f, -1.5f), texture1);
+    for (int x = -50; x <= 50; x++) {
+        for (int z = -50; z <= 50; z++) {
+            float y = sin((float)x / 2.0f) * sin((float)z / 2.0f) * 2.0f;
+            objects.emplace_back(Object(vertices, glm::vec3(x, y, z), texture1));
+        }
+    }
 
     unsigned int VAO;
     glGenVertexArrays(1, &VAO);
@@ -136,7 +137,24 @@ int main() {
     glEnable(GL_DEPTH_TEST);
 
     bool quit = false;
+
+    bool W = false;
+    bool S = false;
+    bool A = false;
+    bool D = false;
+    bool SPACE = false;
+    bool LCTRL = false;
+    bool RIGHT = false;
+    bool LEFT = false;
+    bool UP = false;
+    bool DOWN = false;
     while (!quit) {
+
+        SDL_Time currentFrame;
+        SDL_GetCurrentTime(&currentFrame);
+
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
 
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
@@ -152,37 +170,102 @@ int main() {
                         break;
                     }
                     if (event.key.key == SDLK_W) {
-                        camera.move(glm::vec3(0.0f, 0.0f, 0.05f));
+                        W = true;
                     }
                     if (event.key.key == SDLK_S) {
-                        camera.move(glm::vec3(0.0f, 0.0f, -0.05f));
+                        S = true;
                     }
                     if (event.key.key == SDLK_A) {
-                        camera.move(glm::vec3(0.05f, 0.0f, 0.0f));
+                        A = true;
                     }
                     if (event.key.key == SDLK_D) {
-                        camera.move(glm::vec3(-0.05f, 0.0f, 0.0f));
+                        D = true;
                     }
                     if (event.key.key == SDLK_SPACE) {
-                        camera.move(glm::vec3(0.0f, -0.05f, 0.0f));
+                        SPACE = true;
                     }
                     if (event.key.key == SDLK_LCTRL) {
-                        camera.move(glm::vec3(0.0f, 0.05f, 0.0f));
+                        LCTRL = true;
                     }
                     if (event.key.key == SDLK_RIGHT) {
-                        camera.rotate(0.05f, glm::vec3(0.0f, 1.0f, 0.0f));
+                        RIGHT = true;
                     }
                     if (event.key.key == SDLK_LEFT) {
-                        camera.rotate(0.05f, glm::vec3(0.0f, -1.0f, 0.0f));
+                        LEFT = true;
                     }
                     if (event.key.key == SDLK_UP) {
-                        camera.rotate(0.05f, glm::vec3(1.0f, 0.0f, 0.0f));
+                        UP = true;
                     }
                     if (event.key.key == SDLK_DOWN) {
-                        camera.rotate(-0.05f, glm::vec3(1.0f, 0.0f, 0.0f));
+                        DOWN = true;
                     }
+                    break;
+                }
+                case (SDL_EVENT_KEY_UP): {
+                    if (event.key.key == SDLK_W) {
+                        W = false;
+                    }
+                    if (event.key.key == SDLK_S) {
+                        S = false;
+                    }
+                    if (event.key.key == SDLK_A) {
+                        A = false;
+                    }
+                    if (event.key.key == SDLK_D) {
+                        D = false;
+                    }
+                    if (event.key.key == SDLK_SPACE) {
+                        SPACE = false;
+                    }
+                    if (event.key.key == SDLK_LCTRL) {
+                        LCTRL = false;
+                    }
+                    if (event.key.key == SDLK_RIGHT) {
+                        RIGHT = false;
+                    }
+                    if (event.key.key == SDLK_LEFT) {
+                        LEFT = false;
+                    }
+                    if (event.key.key == SDLK_UP) {
+                        UP = false;
+                    }
+                    if (event.key.key == SDLK_DOWN) {
+                        DOWN = false;
+                    }
+                    break;
                 }
             }
+        }
+
+        if (W) {
+            camera.move(camera.getFront() * cameraSpeed);
+        }
+        if (S) {
+            camera.move(-camera.getFront() * cameraSpeed);
+        }
+        if (A) {
+            camera.move(-camera.getRight() * cameraSpeed);
+        }
+        if (D) {
+            camera.move(camera.getRight() * cameraSpeed);
+        }
+        if (SPACE) {
+            camera.move(glm::vec3(0.0f, 0.05f, 0.0f));
+        }
+        if (LCTRL) {
+            camera.move(glm::vec3(0.0f, -0.05f, 0.0f));
+        }
+        if (RIGHT) {
+            camera.rotate(0.0f, 1.0f);
+        }
+        if (LEFT) {
+            camera.rotate(0.0f, -1.0f);
+        }
+        if (UP) {
+            camera.rotate(-1.0f, 0.0f);
+        }
+        if (DOWN) {
+            camera.rotate(1.0f, 0.0f);
         }
 
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(camera.getProjection()));
@@ -195,8 +278,6 @@ int main() {
             Object& current = objects[i];
 
             glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(current.getModelMatrix()));
-
-            current.rotate(0.02f, glm::vec3(0.5f, 1.0f, 0.0f));
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
 

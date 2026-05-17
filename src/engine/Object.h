@@ -13,7 +13,9 @@
 #include "./render/glm/fwd.hpp"
 #include "render/glm/ext/matrix_transform.hpp"
 
-
+/**
+ * Unfinished class
+ */
 class Object {
 
     public:
@@ -27,7 +29,6 @@ class Object {
         void render(const Camera& camera);
 
         [[nodiscard]] glm::mat4 getModelMatrix() const;
-
         [[nodiscard]] Texture* getTexture() const;
 
     private:
