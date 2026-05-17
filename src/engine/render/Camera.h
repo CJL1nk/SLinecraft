@@ -47,6 +47,11 @@ class Camera {
          */
         [[nodiscard]] glm::mat4 getView() const;
         /**
+         * Returns camera up vector
+         * @return Camera up vector
+         */
+        [[nodiscard]] glm::vec3 getUp() const;
+        /**
          * Returns camera front vector
          * @return Camera front vector
          */

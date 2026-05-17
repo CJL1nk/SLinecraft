@@ -27,7 +27,7 @@ int main() {
     SDL_Window* window = initWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Slinecraft");
 
     Camera camera(FOV, ASPECT_RATIO, 0.1f, 100.0f);
-    const float cameraSpeed = 0.05f;
+    const float cameraSpeed = 0.1f;
 
     camera.move(glm::vec3(0.0f, 0.0f, -3.0f));
 
@@ -107,8 +107,11 @@ int main() {
 
     for (int x = -50; x <= 50; x++) {
         for (int z = -50; z <= 50; z++) {
-            float y = sin((float)x / 2.0f) * sin((float)z / 2.0f) * 2.0f;
-            objects.emplace_back(Object(vertices, glm::vec3(x, y, z), texture1));
+            float y = sin((float)x / 2.0f) * sin((float)z / 2.0f) * 4.0f + 4;
+
+            for (int i = 0; i < y; i++) {
+                objects.emplace_back(Object(vertices, glm::vec3(x, i, z), texture1));
+            }
         }
     }
 
@@ -153,8 +156,12 @@ int main() {
         SDL_Time currentFrame;
         SDL_GetCurrentTime(&currentFrame);
 
-        deltaTime = currentFrame - lastFrame;
+        SDL_Time deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+
+        float deltaSeconds = (float)deltaTime / 10000000.0f;
+
+        float cameraVelocity = cameraSpeed * deltaSeconds;
 
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
@@ -238,34 +245,34 @@ int main() {
         }
 
         if (W) {
-            camera.move(camera.getFront() * cameraSpeed);
+            camera.move(camera.getFront() * cameraVelocity);
         }
         if (S) {
-            camera.move(-camera.getFront() * cameraSpeed);
+            camera.move(-camera.getFront() * cameraVelocity);
         }
         if (A) {
-            camera.move(-camera.getRight() * cameraSpeed);
+            camera.move(-camera.getRight() * cameraVelocity);
         }
         if (D) {
-            camera.move(camera.getRight() * cameraSpeed);
+            camera.move(camera.getRight() * cameraVelocity);
         }
         if (SPACE) {
-            camera.move(glm::vec3(0.0f, 0.05f, 0.0f));
+            camera.move(camera.getUp() * cameraVelocity);
         }
         if (LCTRL) {
-            camera.move(glm::vec3(0.0f, -0.05f, 0.0f));
+            camera.move(-camera.getUp() * cameraVelocity);
         }
         if (RIGHT) {
-            camera.rotate(0.0f, 1.0f);
+            camera.rotate(0.0f, 2.0f);
         }
         if (LEFT) {
-            camera.rotate(0.0f, -1.0f);
+            camera.rotate(0.0f, -2.0f);
         }
         if (UP) {
-            camera.rotate(-1.0f, 0.0f);
+            camera.rotate(-2.0f, 0.0f);
         }
         if (DOWN) {
-            camera.rotate(1.0f, 0.0f);
+            camera.rotate(2.0f, 0.0f);
         }
 
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(camera.getProjection()));

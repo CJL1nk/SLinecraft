@@ -9,7 +9,7 @@
 
 Camera::Camera(const float fov, const float aspectRatio, const float near, const float far) {
 
-    this->position = glm::vec3(0.0f, 0.0f, 10.0f);
+    this->position = glm::vec3(0.0f, 10.0f, 0.0f);
     this->cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
     this->cameraDirection = glm::vec3(0.0f, 0.0f, -1.0f);
 
@@ -55,6 +55,10 @@ glm::mat4 Camera::getProjection() const {
 
 glm::mat4 Camera::getView() const {
     return this->view;
+}
+
+glm::vec3 Camera::getUp() const {
+    return this->cameraUp;
 }
 
 glm::vec3 Camera::getFront() const {
