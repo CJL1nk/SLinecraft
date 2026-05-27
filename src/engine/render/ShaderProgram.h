@@ -8,6 +8,7 @@
 #include <vector>
 #include "./glad/include/glad/glad.h"
 #include "./Shader.h"
+#include "./glm/vec3.hpp"
 
 /**
  * Class holding an OpenGL shader program and its info
@@ -38,6 +39,15 @@ class ShaderProgram {
          * @note Must be called after all shaders are added, with .use() being called after to use
          */
         void link() const;
+
+        /**
+         * Sets a uniform vec3 within a shader, given its name.
+         * IMPORTANT: CALL AFTER USE()
+         * @param name Input vector name
+         * @param value Value to assign vector
+         * @return Handle of shader uniform
+         */
+        GLint setVec3(const GLchar* name, const glm::vec3& value);
 
         /**
          * Binds the current program for use

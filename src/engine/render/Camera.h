@@ -68,7 +68,6 @@ class Camera {
 
         float yaw = -90.0f;
         float pitch = 0.0f;
-        glm::vec3 rotation;
 
         glm::mat4 view;
         glm::mat4 projection;

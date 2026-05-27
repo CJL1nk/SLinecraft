@@ -33,6 +33,13 @@ void ShaderProgram::link() const {
     }
 }
 
+
+GLint ShaderProgram::setVec3(const GLchar* name, const glm::vec3& value) {
+    const GLint handle = glGetUniformLocation(this->handle, name);
+    glUniform3fv(handle, 1, &value[0]);
+    return handle;
+}
+
 void ShaderProgram::use() const {
     glUseProgram(this->handle);
 }
