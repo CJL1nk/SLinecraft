@@ -15,7 +15,9 @@ Shader::~Shader() {
 void Shader::compile() {
 
     const GLuint shader = glCreateShader(this->type);
-    glShaderSource(shader, 1, &this->source, nullptr);
+    const char* src = this->source.c_str(); // This is so dumb bro.
+
+    glShaderSource(shader, 1, &src, nullptr);
     glCompileShader(shader);
 
     // Test if successful

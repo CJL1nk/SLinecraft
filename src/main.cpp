@@ -6,6 +6,7 @@
 #include <iostream>
 #include <SDL3/SDL.h>
 
+#include "./Block.h"
 #include "./engine/Object.h"
 #include "./engine/render/glm/gtc/type_ptr.hpp"
 #include "./engine/render/glad/include/glad/glad.h"
@@ -28,21 +29,18 @@ int main() {
 
     Camera camera(FOV, ASPECT_RATIO, 0.1f, 100.0f);
     const float cameraSpeed = 0.1f;
-
-    camera.move(glm::vec3(0.0f, 0.0f, -3.0f));
-    glm::vec3 lightPos(0.0f, 6.0f, 0.0f);
+    glm::vec3 lightPos(0.0f, 60.0f, 0.0f);
 
     SDL_GL_SetSwapInterval(1);
 
     // Textures and Shaders ---------------------------------------------------------------------------------
     std::shared_ptr<Texture> texture1 = std::make_shared<Texture>("../textures/dirt.png", GL_RGB);
+    std::shared_ptr<Texture> texture2 = std::make_shared<Texture>("../textures/stone.png", GL_RGBA);
     texture1->load();
+    texture2->load();
 
-    glActiveTexture(GL_TEXTURE0);
-    texture1->bind();
-
-    Shader vertexShader(vertexShaderSource, GL_VERTEX_SHADER);
-    Shader fragmentShader(fragmentShaderSource, GL_FRAGMENT_SHADER);
+    Shader vertexShader(loadShader("../shaders/vert.vert"), GL_VERTEX_SHADER);
+    Shader fragmentShader(loadShader("../shaders/frag.frag"), GL_FRAGMENT_SHADER);
     vertexShader.compile();
     fragmentShader.compile();
 
@@ -59,68 +57,26 @@ int main() {
     fragmentShader.deleteShader();
     // ------------------------------------------------------------------------------------------------------
 
-    std::vector<Object> objects;
+    std::vector<Block> blocks;
 
-
-    float vertices[] = {
-    // positions          // texcoords  // normals
-    // back face
-    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,   0.0f,  0.0f, -1.0f,
-     0.5f, -0.5f, -0.5f,  1.0f, 0.0f,   0.0f,  0.0f, -1.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,   0.0f,  0.0f, -1.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,   0.0f,  0.0f, -1.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,   0.0f,  0.0f, -1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,   0.0f,  0.0f, -1.0f,
-
-    // front face
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   0.0f,  0.0f,  1.0f,
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,   0.0f,  0.0f,  1.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,   0.0f,  0.0f,  1.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,   0.0f,  0.0f,  1.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,   0.0f,  0.0f,  1.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   0.0f,  0.0f,  1.0f,
-
-    // left face
-    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  -1.0f,  0.0f,  0.0f,
-    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  -1.0f,  0.0f,  0.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  -1.0f,  0.0f,  0.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  -1.0f,  0.0f,  0.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  -1.0f,  0.0f,  0.0f,
-    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  -1.0f,  0.0f,  0.0f,
-
-    // right face
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,   1.0f,  0.0f,  0.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,   1.0f,  0.0f,  0.0f,
-     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,   1.0f,  0.0f,  0.0f,
-     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,   1.0f,  0.0f,  0.0f,
-     0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   1.0f,  0.0f,  0.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,   1.0f,  0.0f,  0.0f,
-
-    // bottom face
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,   0.0f, -1.0f,  0.0f,
-     0.5f, -0.5f, -0.5f,  1.0f, 1.0f,   0.0f, -1.0f,  0.0f,
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,   0.0f, -1.0f,  0.0f,
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,   0.0f, -1.0f,  0.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,   0.0f, -1.0f,  0.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,   0.0f, -1.0f,  0.0f,
-
-    // top face
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,   0.0f,  1.0f,  0.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,   0.0f,  1.0f,  0.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,   0.0f,  1.0f,  0.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,   0.0f,  1.0f,  0.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,   0.0f,  1.0f,  0.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,   0.0f,  1.0f,  0.0f
-};
-
-
+    // Worldgen
     int totalBlocks = 0;
     for (int x = -50; x <= 50; x++) {
         for (int z = -50; z <= 50; z++) {
-            float y = sin((float)x / 2.0f) * sin((float)z / 2.0f) * 4.0f + 4;
+
+            std::shared_ptr<Texture> activeTexture = texture1;
+
+            float y = 1;
+            if (x % 20 == 0 && z % 20 == 0) {
+                y = 4;
+            }
+            if (abs(x) >= 37) {
+                y = sin((float)x / 2.0f) * sin((float)z / 2.0f) * 4.0f + 4;
+                activeTexture = texture2;
+            }
 
             for (int i = 0; i < y; i++) {
-                objects.emplace_back(Object(vertices, glm::vec3(x, i, z), texture1));
+                blocks.emplace_back(glm::vec3(x, i, z), activeTexture);
                 totalBlocks++;
             }
         }
@@ -135,7 +91,7 @@ int main() {
     unsigned int VBO;
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, blocks[0].getVertexCount() * sizeof(float), blocks[0].getVertices(), GL_STATIC_DRAW); // Hack, but it works
 
     glVertexAttribPointer(0, 3,GL_FLOAT, GL_FALSE, 8 * sizeof(float), nullptr);
     glEnableVertexAttribArray(0);
@@ -154,6 +110,7 @@ int main() {
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     glEnable(GL_DEPTH_TEST);
+    glActiveTexture(GL_TEXTURE0);
 
     bool quit = false;
 
@@ -161,6 +118,7 @@ int main() {
     bool S = false;
     bool A = false;
     bool D = false;
+    bool P = false;
     bool SPACE = false;
     bool LCTRL = false;
     bool RIGHT = false;
@@ -206,6 +164,9 @@ int main() {
                     if (event.key.key == SDLK_D) {
                         D = true;
                     }
+                    if (event.key.key == SDLK_P) {
+                        P = true;
+                    }
                     if (event.key.key == SDLK_SPACE) {
                         SPACE = true;
                     }
@@ -238,6 +199,9 @@ int main() {
                     }
                     if (event.key.key == SDLK_D) {
                         D = false;
+                    }
+                    if (event.key.key == SDLK_P) {
+                        P = false;
                     }
                     if (event.key.key == SDLK_SPACE) {
                         SPACE = false;
@@ -274,6 +238,9 @@ int main() {
         if (D) {
             camera.move(camera.getRight() * cameraVelocity);
         }
+        if (P) {
+            std::cout << "x: " << camera.getPosition().x << " y: " << camera.getPosition().y << " z: " << camera.getPosition().z << std::endl;
+        }
         if (SPACE) {
             camera.move(camera.getUp() * cameraVelocity);
         }
@@ -293,14 +260,16 @@ int main() {
             camera.rotate(1.0f * deltaSeconds, 0.0f);
         }
 
+
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(camera.getProjection()));
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera.getView()));
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        for (int i = 0; i < objects.size(); i++) {
-            Object& current = objects[i];
+        for (int i = 0; i < blocks.size(); i++) {
+            glBindTexture(GL_TEXTURE_2D, blocks[i].getTexture()->getHandle());
+            Object& current = blocks[i];
 
             glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(current.getModelMatrix()));
             glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -311,8 +280,8 @@ int main() {
     }
 
     // Delete all textures when done with them please!!!!!!!!!!!!
-    for (int i = 0; i < objects.size(); i++) {
-        Object& current = objects[i];
+    for (int i = 0; i < blocks.size(); i++) {
+        Object& current = blocks[i];
         current.getTexture()->deleteTexture();
     }
 

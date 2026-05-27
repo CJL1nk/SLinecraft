@@ -62,6 +62,12 @@ class Camera {
          */
         [[nodiscard]] glm::vec3 getRight() const;
 
+        /**
+         * Returns camera position vector
+         * @return Camera position vector
+         */
+        [[nodiscard]] glm::vec3 getPosition() const;
+
 
     private:
         glm::vec3 position;

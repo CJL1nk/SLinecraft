@@ -22,3 +22,17 @@ glm::mat4 Object::getModelMatrix() const {
 Texture* Object::getTexture() const {
     return this->texture.get();
 }
+
+const float* Object::getVertices() const {
+    return this->vertices;
+}
+
+int Object::getVertexCount() const {
+    return this->vertexCount;
+}
+
+
+void Object::setVertices(const float* newVertices) {
+    this->vertices = newVertices;
+}
+

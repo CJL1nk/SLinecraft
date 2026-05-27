@@ -19,8 +19,8 @@
 class Object {
 
     public:
-        Object(const float* vertices, const glm::vec3& worldPos, const std::shared_ptr<Texture>& texture) :
-            vertices(vertices), worldPos(worldPos), modelMatrix(glm::mat4(1.0f)), texture(texture) {
+        Object(const float* vertices, int vertexCount, const glm::vec3& worldPos, const std::shared_ptr<Texture>& texture) :
+            vertices(vertices), vertexCount(vertexCount), worldPos(worldPos), modelMatrix(glm::mat4(1.0f)), texture(texture) {
             this->modelMatrix = glm::translate(this->modelMatrix, worldPos);
         }
 
@@ -30,10 +30,16 @@ class Object {
 
         [[nodiscard]] glm::mat4 getModelMatrix() const;
         [[nodiscard]] Texture* getTexture() const;
+        [[nodiscard]] const float* getVertices() const;
+        [[nodiscard]] int getVertexCount() const;
+
+        void setVertices(const float* newVertices);
+
+    protected:
+        const float* vertices;
+        int vertexCount;
 
     private:
-        const float* vertices;
-
         glm::vec3 worldPos;
         glm::vec4 rotation{}; // (degrees, x, y, z)
         float scale{};
@@ -41,6 +47,8 @@ class Object {
         glm::mat4 modelMatrix; // Contains transformed vertices
 
         std::shared_ptr<Texture> texture;
+
+        float emissivity;
 };
 
 

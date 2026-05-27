@@ -7,6 +7,8 @@
 
 #include "glad/include/glad/glad.h"
 
+#include <string>
+
 /**
  * Class holding an OpenGL shader and its info
  * @note Shader program is NOT deleted on function scope exit, please call .deleteShader() when it is done being used (linked to program)
@@ -18,7 +20,7 @@ class Shader {
          * @param source String containing shader source
          * @param type Type of shader (GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, ...)
          */
-        Shader(const char* source, const GLuint type) : source(source), type(type) {};
+        Shader(const std::string& source, const GLuint type) : source(source), type(type) {};
         // Will also support shader file here later
         ~Shader();
 
@@ -38,7 +40,7 @@ class Shader {
         [[nodiscard]] GLuint getHandle() const;
 
     private:
-        const char* source;
+        std::string source;
         GLuint type;
         GLuint handle{};
 };
