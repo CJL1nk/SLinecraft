@@ -23,6 +23,7 @@ add_executable(SLinecraft
         src/engine/render/Camera.cpp
 
         src/engine/Object.cpp
+        src/engine/event.cpp
 
         src/utils/utils.cpp
 

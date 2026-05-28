@@ -9,10 +9,11 @@
 #include "./Block.h"
 #include "./World.h"
 
+#include "./engine/event.h"
 #include "./engine/Object.h"
+
 #include "./engine/render/glm/gtc/type_ptr.hpp"
 #include "./engine/render/glad/include/glad/glad.h"
-
 #include "./engine/render/window.h"
 #include "./engine/render/shaders/shaders.h"
 #include "./engine/render/Texture.h"
@@ -29,7 +30,7 @@ int main() {
 
     SDL_Window* window = initWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Slinecraft");
 
-    Camera camera(FOV, ASPECT_RATIO, 0.1f, 100.0f);
+    Camera camera(FOV, ASPECT_RATIO, 0.1f, 10000.0f);
     const float cameraSpeed = 0.1f;
     glm::vec3 lightPos(0.0f, 60.0f, 0.0f);
 
@@ -86,20 +87,6 @@ int main() {
     glEnable(GL_DEPTH_TEST);
     glActiveTexture(GL_TEXTURE0);
 
-    bool quit = false;
-
-    bool W = false;
-    bool S = false;
-    bool A = false;
-    bool D = false;
-    bool P = false;
-    bool SPACE = false;
-    bool LCTRL = false;
-    bool RIGHT = false;
-    bool LEFT = false;
-    bool UP = false;
-    bool DOWN = false;
-
     signed long int  lastFrame = 0;
     while (!quit) {
 
@@ -113,92 +100,7 @@ int main() {
 
         float cameraVelocity = cameraSpeed * deltaSeconds;
 
-        SDL_Event event;
-        while (SDL_PollEvent(&event)) {
-
-            if (event.type == SDL_EVENT_QUIT) {
-                quit = true;
-            }
-
-            switch (event.type) {
-                case (SDL_EVENT_KEY_DOWN): {
-                    if (event.key.key == SDLK_Q) {
-                        quit = true;
-                        break;
-                    }
-                    if (event.key.key == SDLK_W) {
-                        W = true;
-                    }
-                    if (event.key.key == SDLK_S) {
-                        S = true;
-                    }
-                    if (event.key.key == SDLK_A) {
-                        A = true;
-                    }
-                    if (event.key.key == SDLK_D) {
-                        D = true;
-                    }
-                    if (event.key.key == SDLK_P) {
-                        P = true;
-                    }
-                    if (event.key.key == SDLK_SPACE) {
-                        SPACE = true;
-                    }
-                    if (event.key.key == SDLK_LCTRL) {
-                        LCTRL = true;
-                    }
-                    if (event.key.key == SDLK_RIGHT) {
-                        RIGHT = true;
-                    }
-                    if (event.key.key == SDLK_LEFT) {
-                        LEFT = true;
-                    }
-                    if (event.key.key == SDLK_UP) {
-                        UP = true;
-                    }
-                    if (event.key.key == SDLK_DOWN) {
-                        DOWN = true;
-                    }
-                    break;
-                }
-                case (SDL_EVENT_KEY_UP): {
-                    if (event.key.key == SDLK_W) {
-                        W = false;
-                    }
-                    if (event.key.key == SDLK_S) {
-                        S = false;
-                    }
-                    if (event.key.key == SDLK_A) {
-                        A = false;
-                    }
-                    if (event.key.key == SDLK_D) {
-                        D = false;
-                    }
-                    if (event.key.key == SDLK_P) {
-                        P = false;
-                    }
-                    if (event.key.key == SDLK_SPACE) {
-                        SPACE = false;
-                    }
-                    if (event.key.key == SDLK_LCTRL) {
-                        LCTRL = false;
-                    }
-                    if (event.key.key == SDLK_RIGHT) {
-                        RIGHT = false;
-                    }
-                    if (event.key.key == SDLK_LEFT) {
-                        LEFT = false;
-                    }
-                    if (event.key.key == SDLK_UP) {
-                        UP = false;
-                    }
-                    if (event.key.key == SDLK_DOWN) {
-                        DOWN = false;
-                    }
-                    break;
-                }
-            }
-        }
+        pollEvents();
 
         if (W) {
             camera.move(camera.getFront() * cameraVelocity);
@@ -233,7 +135,6 @@ int main() {
         if (DOWN) {
             camera.rotate(1.0f * deltaSeconds, 0.0f);
         }
-
 
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(camera.getProjection()));
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera.getView()));
