@@ -21,7 +21,6 @@ class Shader {
          * @param type Type of shader (GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, ...)
          */
         Shader(const std::string& source, const GLuint type) : source(source), type(type) {};
-        // Will also support shader file here later
         ~Shader();
 
         /**

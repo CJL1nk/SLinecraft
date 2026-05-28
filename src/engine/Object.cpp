@@ -10,7 +10,6 @@ void Object::rotate(const float& degrees, const glm::vec3& axis) {
     this->modelMatrix = glm::rotate(this->modelMatrix, degrees, axis);
 }
 
-
 void Object::render(const Camera& camera) {
 
 }
@@ -19,8 +18,8 @@ glm::mat4 Object::getModelMatrix() const {
     return this->modelMatrix;
 }
 
-Texture* Object::getTexture() const {
-    return this->texture.get();
+std::shared_ptr<Texture> Object::getTexture() const {
+    return this->texture;
 }
 
 const float* Object::getVertices() const {
@@ -29,10 +28,5 @@ const float* Object::getVertices() const {
 
 int Object::getVertexCount() const {
     return this->vertexCount;
-}
-
-
-void Object::setVertices(const float* newVertices) {
-    this->vertices = newVertices;
 }
 

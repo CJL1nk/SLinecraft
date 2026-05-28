@@ -7,6 +7,8 @@
 #include <SDL3/SDL.h>
 
 #include "./Block.h"
+#include "./World.h"
+
 #include "./engine/Object.h"
 #include "./engine/render/glm/gtc/type_ptr.hpp"
 #include "./engine/render/glad/include/glad/glad.h"
@@ -33,11 +35,7 @@ int main() {
 
     SDL_GL_SetSwapInterval(1);
 
-    // Textures and Shaders ---------------------------------------------------------------------------------
-    std::shared_ptr<Texture> texture1 = std::make_shared<Texture>("../textures/dirt.png", GL_RGB);
-    std::shared_ptr<Texture> texture2 = std::make_shared<Texture>("../textures/stone.png", GL_RGBA);
-    texture1->load();
-    texture2->load();
+    // Shaders ---------------------------------------------------------------------------------
 
     Shader vertexShader(loadShader("../shaders/vert.vert"), GL_VERTEX_SHADER);
     Shader fragmentShader(loadShader("../shaders/frag.frag"), GL_FRAGMENT_SHADER);
@@ -57,32 +55,8 @@ int main() {
     fragmentShader.deleteShader();
     // ------------------------------------------------------------------------------------------------------
 
-    std::vector<Block> blocks;
-
-    // Worldgen
-    int totalBlocks = 0;
-    for (int x = -50; x <= 50; x++) {
-        for (int z = -50; z <= 50; z++) {
-
-            std::shared_ptr<Texture> activeTexture = texture1;
-
-            float y = 1;
-            if (x % 20 == 0 && z % 20 == 0) {
-                y = 4;
-            }
-            if (abs(x) >= 37) {
-                y = sin((float)x / 2.0f) * sin((float)z / 2.0f) * 4.0f + 4;
-                activeTexture = texture2;
-            }
-
-            for (int i = 0; i < y; i++) {
-                blocks.emplace_back(glm::vec3(x, i, z), activeTexture);
-                totalBlocks++;
-            }
-        }
-    }
-
-    std::cout << "Total blocks: " << totalBlocks << std::endl;
+    Block::initBlockTextures();
+    std::vector<Block> blocks = World::generateWorld();
 
     unsigned int VAO;
     glGenVertexArrays(1, &VAO);

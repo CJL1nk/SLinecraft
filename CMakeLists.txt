@@ -27,6 +27,8 @@ add_executable(SLinecraft
         src/utils/utils.cpp
 
         src/main.cpp
+        src/Block.cpp
+        src/World.cpp
 )
 
 target_link_libraries(SLinecraft PRIVATE SDL3::SDL3)
