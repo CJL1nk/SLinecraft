@@ -21,6 +21,12 @@
 #include "./engine/render/ShaderProgram.h"
 #include "./engine/render/Camera.h"
 
+struct lightSource {
+    glm::vec3 position;
+    glm::vec3 direction;
+    glm::vec3 diffuse;
+};
+
 int main() {
 
     constexpr uint16_t SCREEN_WIDTH = 1920;
@@ -32,7 +38,8 @@ int main() {
 
     Camera camera(FOV, ASPECT_RATIO, 0.1f, 10000.0f);
     const float cameraSpeed = 0.1f;
-    glm::vec3 lightPos(0.0f, 60.0f, 0.0f);
+
+    lightSource light = {glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3( 0.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)};
 
     SDL_GL_SetSwapInterval(1);
 
@@ -48,7 +55,9 @@ int main() {
     program.add(fragmentShader);
     program.link();
     program.use();
-    program.setVec3("lightPos", lightPos); // CALL AFTER USE()!!!! AFTER!!!!! I SPENT LIKE FOREVER DEBUGGING THIS
+    program.setVec3("light.position", light.position); // CALL AFTER USE()!!!! AFTER!!!!! I SPENT LIKE FOREVER DEBUGGING THIS
+    program.setVec3("light.direction", light.direction); // CALL AFTER USE()!!!! AFTER!!!!! I SPENT LIKE FOREVER DEBUGGING THIS
+    program.setVec3("light.diffuse", light.diffuse); // CALL AFTER USE()!!!! AFTER!!!!! I SPENT LIKE FOREVER DEBUGGING THIS
 
     glUniform1i(glGetUniformLocation(program.getHandle(), "texture1"), 0); // set it manually
 
@@ -104,24 +113,37 @@ int main() {
 
         if (W) {
             camera.move(camera.getFront() * cameraVelocity);
+            light.position += camera.getFront() * cameraVelocity;
+            program.setVec3("light.position", light.position);
         }
         if (S) {
             camera.move(-camera.getFront() * cameraVelocity);
+            light.position += -camera.getFront() * cameraVelocity;
+            program.setVec3("light.position", light.position);
         }
         if (A) {
             camera.move(-camera.getRight() * cameraVelocity);
+            light.position += -camera.getRight() * cameraVelocity;
+            program.setVec3("light.position", light.position);
         }
         if (D) {
             camera.move(camera.getRight() * cameraVelocity);
+            light.position += camera.getRight() * cameraVelocity;
+            program.setVec3("light.position", light.position);
         }
         if (P) {
             std::cout << "x: " << camera.getPosition().x << " y: " << camera.getPosition().y << " z: " << camera.getPosition().z << std::endl;
+            blocks.push_back(Block(glm::vec3(camera.getPosition().x, camera.getPosition().y - 1.0f, camera.getPosition().z), 1));
         }
         if (SPACE) {
             camera.move(camera.getUp() * cameraVelocity);
+            light.position += camera.getUp() * cameraVelocity;
+            program.setVec3("light.position", light.position);
         }
         if (LCTRL) {
             camera.move(-camera.getUp() * cameraVelocity);
+            light.position += -camera.getUp() * cameraVelocity;
+            program.setVec3("light.position", light.position);
         }
         if (RIGHT) {
             camera.rotate(0.0f, 1.0f * deltaSeconds);
