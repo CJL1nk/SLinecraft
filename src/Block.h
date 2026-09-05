@@ -33,7 +33,10 @@ class Block : public Object {
     static void initBlockTextures();
 
     private:
-        int blockID; // Will later make the blockID determine the texture
+
+        int blockID; // Determines texture, hardness, and other block properties
+        glm::vec3 blockPos;
+
         // LOOOOOL
         static inline const std::array<float, 288> vertices = {
             // positions          // texcoords  // normals
@@ -79,12 +82,12 @@ class Block : public Object {
             -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,   0.0f, -1.0f,  0.0f,
 
             // top face
-            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,   0.0f,  1.0f,  0.0f,
-             0.5f,  0.5f, -0.5f,  1.0f, 1.0f,   0.0f,  1.0f,  0.0f,
-             0.5f,  0.5f,  0.5f,  1.0f, 0.0f,   0.0f,  1.0f,  0.0f,
-             0.5f,  0.5f,  0.5f,  1.0f, 0.0f,   0.0f,  1.0f,  0.0f,
-            -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,   0.0f,  1.0f,  0.0f,
-            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,   0.0f,  1.0f,  0.0f
+            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,   0.0f, 1.0f,  0.0f,
+             0.5f,  0.5f, -0.5f,  1.0f, 1.0f,   0.0f, 1.0f,  0.0f,
+             0.5f,  0.5f,  0.5f,  1.0f, 0.0f,   0.0f, 1.0f,  0.0f,
+             0.5f,  0.5f,  0.5f,  1.0f, 0.0f,   0.0f, 1.0f,  0.0f,
+            -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,   0.0f, 1.0f,  0.0f,
+            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,   0.0f, 1.0f,  0.0f
         };
 };
 

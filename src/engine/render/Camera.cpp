@@ -9,7 +9,7 @@
 
 Camera::Camera(const float fov, const float aspectRatio, const float near, const float far) {
 
-    this->position = glm::vec3(0.0f, 10.0f, 0.0f);
+    this->position = glm::vec3(0.0f, 0.0f, 0.0f);
     this->cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
     this->cameraDirection = glm::vec3(0.0f, 0.0f, -1.0f);
 
@@ -63,6 +63,10 @@ glm::vec3 Camera::getUp() const {
 
 glm::vec3 Camera::getFront() const {
     return this->cameraFront;
+}
+
+glm::vec3 Camera::getFlatFront() const {
+    return glm::normalize(glm::vec3(this->cameraFront.x, 0.0f, this->cameraFront.z));
 }
 
 glm::vec3 Camera::getRight() const {

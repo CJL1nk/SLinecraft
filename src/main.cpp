@@ -21,10 +21,16 @@
 #include "./engine/render/ShaderProgram.h"
 #include "./engine/render/Camera.h"
 
-struct lightSource {
+struct PointLightSource {
     glm::vec3 position;
-    glm::vec3 direction;
     glm::vec3 diffuse;
+    glm::vec3 direction;
+
+    float strength = 2.0f;
+
+    float constant = 1.0f;
+    float linear = 0.09f;
+    float quadratic = 0.032f;
 };
 
 int main() {
@@ -32,16 +38,16 @@ int main() {
     constexpr uint16_t SCREEN_WIDTH = 1920;
     constexpr uint16_t SCREEN_HEIGHT = 1080;
     constexpr float ASPECT_RATIO = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
-    constexpr float FOV = 60.0f; // Degrees
+    constexpr float FOV = 70.0f; // Degrees
 
     SDL_Window* window = initWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Slinecraft");
 
     Camera camera(FOV, ASPECT_RATIO, 0.1f, 10000.0f);
     const float cameraSpeed = 0.1f;
 
-    lightSource light = {glm::vec3(0.0f, 10.0f, 0.0f), glm::vec3( 0.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)};
+    PointLightSource light = {glm::vec3(0.f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3( 0.0f, -1.0f, 0.0f)};
 
-    SDL_GL_SetSwapInterval(1);
+    SDL_GL_SetSwapInterval(0);
 
     // Shaders ---------------------------------------------------------------------------------
 
@@ -55,9 +61,17 @@ int main() {
     program.add(fragmentShader);
     program.link();
     program.use();
-    program.setVec3("light.position", light.position); // CALL AFTER USE()!!!! AFTER!!!!! I SPENT LIKE FOREVER DEBUGGING THIS
+
+    program.setVec3("light.position", light.position); // CALL AFTER USE()!!!! AFTER!!!!! I SPENT LIKE FOREVER DEBUGGING THISprogram.setVec3("light.diffuse", light.diffuse); // CALL AFTER USE()!!!! AFTER!!!!! I SPENT LIKE FOREVER DEBUGGING THIS
+    program.setFloat("light.strength", light.strength); // CALL AFTER USE()!!!! AFTER!!!!! I SPENT LIKE FOREVER DEBUGGING THIS
     program.setVec3("light.direction", light.direction); // CALL AFTER USE()!!!! AFTER!!!!! I SPENT LIKE FOREVER DEBUGGING THIS
-    program.setVec3("light.diffuse", light.diffuse); // CALL AFTER USE()!!!! AFTER!!!!! I SPENT LIKE FOREVER DEBUGGING THIS
+    program.setFloat("light.constant", light.constant); // CALL AFTER USE()!!!! AFTER!!!!! I SPENT LIKE FOREVER DEBUGGING THIS
+    program.setFloat("light.linear", light.linear); // CALL AFTER USE()!!!! AFTER!!!!! I SPENT LIKE FOREVER DEBUGGING THIS
+    program.setFloat("light.quadratic", light.quadratic); // CALL AFTER USE()!!!! AFTER!!!!! I SPENT LIKE FOREVER DEBUGGING THIS
+    program.setFloat("ambient", 0.05f); // CALL AFTER USE()!!!! AFTER!!!!! I SPENT LIKE FOREVER DEBUGGING THIS
+    program.setFloat("skylight", 0.0f); // CALL AFTER USE()!!!! AFTER!!!!! I SPENT LIKE FOREVER DEBUGGING THIS
+
+    program.setMat4("view", camera.getView());
 
     glUniform1i(glGetUniformLocation(program.getHandle(), "texture1"), 0); // set it manually
 
@@ -83,7 +97,7 @@ int main() {
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
     const int modelLoc = glGetUniformLocation(program.getHandle(), "model");
@@ -95,6 +109,7 @@ int main() {
 
     glEnable(GL_DEPTH_TEST);
     glActiveTexture(GL_TEXTURE0);
+    glClearColor(0.f, 0.03f, 0.05f, 1.0f);
 
     signed long int  lastFrame = 0;
     while (!quit) {
@@ -112,13 +127,13 @@ int main() {
         pollEvents();
 
         if (W) {
-            camera.move(camera.getFront() * cameraVelocity);
-            light.position += camera.getFront() * cameraVelocity;
+            camera.move(camera.getFlatFront() * cameraVelocity);
+            light.position += camera.getFlatFront() * cameraVelocity;
             program.setVec3("light.position", light.position);
         }
         if (S) {
-            camera.move(-camera.getFront() * cameraVelocity);
-            light.position += -camera.getFront() * cameraVelocity;
+            camera.move(-camera.getFlatFront() * cameraVelocity);
+            light.position += -camera.getFlatFront()  * cameraVelocity;
             program.setVec3("light.position", light.position);
         }
         if (A) {
@@ -146,22 +161,20 @@ int main() {
             program.setVec3("light.position", light.position);
         }
         if (RIGHT) {
-            camera.rotate(0.0f, 1.0f * deltaSeconds);
+            camera.rotate(0.0f, 1.5f * deltaSeconds);
         }
         if (LEFT) {
-            camera.rotate(0.0f, -1.0f * deltaSeconds);
+            camera.rotate(0.0f, -1.5f * deltaSeconds);
         }
         if (UP) {
-            camera.rotate(-1.0f * deltaSeconds, 0.0f);
+            camera.rotate(-1.5f * deltaSeconds, 0.0f);
         }
         if (DOWN) {
-            camera.rotate(1.0f * deltaSeconds, 0.0f);
+            camera.rotate(1.5f * deltaSeconds, 0.0f);
         }
 
         glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(camera.getProjection()));
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(camera.getView()));
-
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         for (int i = 0; i < blocks.size(); i++) {

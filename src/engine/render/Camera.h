@@ -57,17 +57,20 @@ class Camera {
          */
         [[nodiscard]] glm::vec3 getFront() const;
         /**
+         * Returns a normalized camera front vector without Y axis
+         * @return Normalized camera front vector without Y axis
+         */
+        [[nodiscard]] glm::vec3 getFlatFront() const;
+        /**
          * Returns camera right vector
          * @return Camera right vector
          */
         [[nodiscard]] glm::vec3 getRight() const;
-
         /**
          * Returns camera position vector
          * @return Camera position vector
          */
         [[nodiscard]] glm::vec3 getPosition() const;
-
 
     private:
         glm::vec3 position;

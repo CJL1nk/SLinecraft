@@ -7,8 +7,10 @@
 
 #include <vector>
 #include "./glad/include/glad/glad.h"
+#include "./glm/gtc/type_ptr.hpp"
 #include "./Shader.h"
 #include "./glm/vec3.hpp"
+
 
 /**
  * Class holding an OpenGL shader program and its info
@@ -41,13 +43,37 @@ class ShaderProgram {
         void link() const;
 
         /**
+         * Sets a uniform integer within a shader, given its name.
+         * IMPORTANT: CALL AFTER USE()
+         * @param name Input integer name
+         * @param value Value to assign integer
+         * @return Handle of shader uniform
+         */
+        GLint setInt(const GLchar* name, int value) const;
+        /**
+         * Sets a uniform float within a shader, given its name.
+         * IMPORTANT: CALL AFTER USE()
+         * @param name Input float name
+         * @param value Value to assign float
+         * @return Handle of shader uniform
+         */
+        GLint setFloat(const GLchar* name, float value) const;
+        /**
          * Sets a uniform vec3 within a shader, given its name.
          * IMPORTANT: CALL AFTER USE()
          * @param name Input vector name
          * @param value Value to assign vector
          * @return Handle of shader uniform
          */
-        GLint setVec3(const GLchar* name, const glm::vec3& value);
+        GLint setVec3(const GLchar* name, const glm::vec3& value) const;
+        /**
+             * Sets a uniform mat4 within a shader, given its name.
+             * IMPORTANT: CALL AFTER USE()
+             * @param name Input vector name
+             * @param value Value to assign vector
+             * @return Handle of shader uniform
+             */
+        GLint setMat4(const GLchar* name, const glm::mat4& value) const;
 
         /**
          * Binds the current program for use
