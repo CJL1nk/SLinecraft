@@ -8,3 +8,7 @@ void Block::initBlockTextures() {
     dirtTexture->load();
     stoneTexture->load();
 }
+
+void Block::setEmission(const float emission) {
+    this->emission = emission;
+}

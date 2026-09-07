@@ -19,11 +19,14 @@ add_executable(SLinecraft
         src/engine/render/ShaderProgram.cpp
         src/engine/render/Texture.cpp
         src/engine/render/Shader.cpp
-        src/engine/render/window.cpp
         src/engine/render/Camera.cpp
 
         src/engine/Object.cpp
         src/engine/event.cpp
+        src/engine/Engine.cpp
+        src/engine/Engine.h
+        src/engine/render/Display.cpp
+        src/engine/render/Display.h
 
         src/utils/utils.cpp
 

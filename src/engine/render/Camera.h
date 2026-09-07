@@ -71,12 +71,14 @@ class Camera {
          * @return Camera position vector
          */
         [[nodiscard]] glm::vec3 getPosition() const;
+        [[nodiscard]] float getSpeed() const;
 
     private:
         glm::vec3 position;
 
         float yaw = -90.0f;
         float pitch = 0.0f;
+        float speed = 0.1f;
 
         glm::mat4 view;
         glm::mat4 projection;

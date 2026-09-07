@@ -2,7 +2,6 @@
 
 struct PointLight {
     vec3 position; // no longer necessary when using directional lights.
-    vec3 direction;
 
     vec3 diffuse;
 
@@ -21,6 +20,7 @@ in vec3 FragPos;
 
 uniform sampler2D texture1;
 uniform PointLight light;
+uniform int numLights;
 uniform float ambient;
 uniform mat4 view;
 uniform float skylight;
@@ -38,7 +38,7 @@ void main()
 
     float lighting = diff * attenuation + ambient + skylight;
 
-    FragColor = texture(texture1, TexCoord) * lighting;
+    FragColor = texture(texture1, TexCoord) * lighting * vec4(light.diffuse, 1.0f);
 }
 
 float calculatePointLights(PointLight light, vec3 normal, vec3 fragPos)

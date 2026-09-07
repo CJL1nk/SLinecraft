@@ -28,6 +28,12 @@ class Block : public Object {
     };
 
     /**
+     * Sets the emissivity of a block
+     * @param emission Emission level to set, from 0.0 to 1.0
+     */
+    void setEmission(float emission);
+
+    /**
      * Loads all block textures into memory, shouldn't be HERE in this class but it's here for now
      */
     static void initBlockTextures();
@@ -36,6 +42,8 @@ class Block : public Object {
 
         int blockID; // Determines texture, hardness, and other block properties
         glm::vec3 blockPos;
+
+        float emission = 0.0f;
 
         // LOOOOOL
         static inline const std::array<float, 288> vertices = {
