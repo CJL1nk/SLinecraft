@@ -16,9 +16,17 @@ Display::Display(const int width, const int height, int target_framerate) {
     SDL_GL_SetSwapInterval(0);
 }
 
+Display::~Display() {
+    SDL_DestroyWindow(this->window);
+}
+
 void Display::render() {
     glClearColor(0.f, 0.03f, 0.05f, 1.0f);
     SDL_GL_SwapWindow(this->window);
+}
+
+void Display::centerMouse() {
+    SDL_WarpMouseInWindow(this->window, this->width / 2, this->height / 2);
 }
 
 

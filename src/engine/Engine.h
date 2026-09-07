@@ -14,7 +14,7 @@ struct PointLightSource {
     glm::vec3 position;
     glm::vec3 diffuse = {1.f, 1.f, 1.f};
 
-    float strength = 2.0f;
+    float strength = 3.0f;
 
     float constant = 1.0f;
     float linear = 0.09f;

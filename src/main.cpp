@@ -10,19 +10,10 @@ int main() {
     Engine* engine = new Engine();
 
     while (!quit) {
+        pollEvents();
         engine->update();
         engine->render();
     }
-/*
-    // Delete all textures when done with them please!!!!!!!!!!!!
-    for (int i = 0; i < blocks.size(); i++) {
-        Object& current = blocks[i];
-        current.getTexture()->deleteTexture();
-    }
 
-    program.deleteProgram();
-    SDL_DestroyWindow(window);
-    SDL_Quit();
-*/
     return 0;
 }

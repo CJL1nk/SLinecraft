@@ -13,7 +13,7 @@
 #include "../World.h"
 
 Engine::Engine() {
-    this->display = new Display(1920, 1080, 60);
+    this->display = new Display(1280, 720, 60);
     this->gameCamera = new Camera(70.0f, this->display->getWidth() / this->display->getHeight(), 0.1f, 1000.0f);
 
     Block::initBlockTextures();
@@ -24,6 +24,15 @@ Engine::Engine() {
 Engine::~Engine() {
     delete this->display;
     delete this->gameCamera;
+
+    // Delete all textures when done with them please!!!!!!!!!!!!
+    for (int i = 0; i < blocks.size(); i++) {
+        Object& current = blocks[i];
+        current.getTexture()->deleteTexture();
+    }
+
+    this->currProgram->deleteProgram();
+    SDL_Quit();
 }
 
 void Engine::update() {
@@ -41,7 +50,6 @@ void Engine::update() {
 
     float deltaSeconds = (float)deltaTime / 10000000.0f;
 
-    pollEvents();
     processInputs(deltaSeconds);
 
     glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(this->gameCamera->getProjection()));
@@ -64,6 +72,7 @@ void Engine::render() const {
 void Engine::processInputs(float deltaSeconds) {
 
     float cameraVelocity = this->gameCamera->getSpeed() * deltaSeconds;
+    const float mouseSensitivity = 0.5f;
 
     if (W) {
         this->gameCamera->move(this->gameCamera->getFlatFront() * cameraVelocity);
@@ -111,6 +120,9 @@ void Engine::processInputs(float deltaSeconds) {
     if (DOWN) {
         this->gameCamera->rotate(1.5f * deltaSeconds, 0.0f);
     }
+
+    gameCamera->rotate(-mouseY * deltaSeconds * mouseSensitivity, mouseX * deltaSeconds * mouseSensitivity);
+    this->display->centerMouse();
 }
 
 
@@ -139,7 +151,7 @@ void Engine::initShaders() {
     this->currProgram->setFloat("light.linear", randomKid.linear);
     this->currProgram->setFloat("light.quadratic", randomKid.quadratic);
     this->currProgram->setFloat("ambient", 0.05f);
-    this->currProgram->setFloat("skylight", 0.0f);
+    this->currProgram->setFloat("skylight", 0.25f);
 
     glUniform1i(glGetUniformLocation(this->currProgram->getHandle(), "texture1"), 0); // set it manually
 

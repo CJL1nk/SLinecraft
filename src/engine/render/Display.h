@@ -12,8 +12,11 @@ class Display {
 
 public:
     Display(int width, int height, int target_framerate);
+    ~Display();
 
     void render();
+
+    void centerMouse();
 
     [[nodiscard]] float getWidth() const { return this->width; };
     [[nodiscard]] float getHeight() const { return this->height; };

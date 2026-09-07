@@ -7,6 +7,9 @@
 
 inline bool quit = false;
 
+inline int mouseX;
+inline int mouseY;
+
 inline bool W = false;
 inline bool S = false;
 inline bool A = false;

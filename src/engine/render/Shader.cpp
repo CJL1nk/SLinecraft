@@ -6,8 +6,6 @@
 
 #include "Shader.h"
 
-#include "glm/vec3.hpp"
-
 Shader::~Shader() {
     //glDeleteShader(this->handle);
 }
