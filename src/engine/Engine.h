@@ -28,6 +28,7 @@ class Engine {
         ~Engine();
 
         void update();
+        void render() const;
 
         void processInputs(float deltaSeconds);
 

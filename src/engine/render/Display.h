@@ -15,9 +15,9 @@ public:
 
     void render();
 
-    int getWidth() const { return this->width; };
-    int getHeight() const { return this->height; };
-    int getTargetFramerate() const { return this->targetFramerate; };
+    [[nodiscard]] float getWidth() const { return this->width; };
+    [[nodiscard]] float getHeight() const { return this->height; };
+    [[nodiscard]] int getTargetFramerate() const { return this->targetFramerate; };
 
         /**
      * Initializes an SDL Window that uses OpenGL.
@@ -28,8 +28,8 @@ public:
     static SDL_Window* createWindow(uint16_t width, uint16_t height);
 
 private:
-    int width;
-    int height;
+    float width;
+    float height;
     int targetFramerate = 60;
     SDL_Window* window;
 };

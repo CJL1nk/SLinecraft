@@ -55,8 +55,10 @@ void Engine::update() {
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(current.getModelMatrix()));
         glDrawArrays(GL_TRIANGLES, 0, 36);
     }
+}
 
-    display->render();
+void Engine::render() const {
+    this->display->render();
 }
 
 void Engine::processInputs(float deltaSeconds) {

@@ -11,6 +11,7 @@ int main() {
 
     while (!quit) {
         engine->update();
+        engine->render();
     }
 /*
     // Delete all textures when done with them please!!!!!!!!!!!!
