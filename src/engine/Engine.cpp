@@ -143,8 +143,9 @@ void Engine::initShaders() {
 
     this->pointLights.push_back({glm::vec3(0.f, 0.0f, 0.0f), glm::vec3(1.f, 1.f, 1.0f)});
     this->pointLights.push_back({glm::vec3(15.f, 5.0f, 15.0f), glm::vec3(1.f, 1.f, 1.0f)});
+    this->pointLights.push_back({glm::vec3(15.f, 5.0f, -15.0f), glm::vec3(1.f, 1.f, 1.0f)});
 
-    this->skylight = {glm::vec3(-0.5f, -1.0f, -0.5f), glm::vec3(1.0f, 1.0f, 0.9f)};
+    this->skylight = {glm::vec3(-0.5f, -1.0f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f)};
 
     // CALL AFTER USE()!!!! AFTER!!!!! I SPENT LIKE FOREVER DEBUGGING THIS
     for (size_t i = 0; i < pointLights.size(); i++)
@@ -167,7 +168,7 @@ void Engine::initShaders() {
     this->currProgram->setVec3("skylight.strength", skylight.strength);
 
     this->currProgram->setMat4("view", gameCamera->getView());
-    this->currProgram->setFloat("ambient", 0.05f);
+    this->currProgram->setFloat("ambient", 0.25f);
 
     glUniform1i(glGetUniformLocation(this->currProgram->getHandle(), "texture1"), 0); // set it manually
 

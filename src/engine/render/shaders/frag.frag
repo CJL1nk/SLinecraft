@@ -38,7 +38,7 @@ vec3 calculateSkyLight(vec3 norm)
 
     float diff = max(dot(norm, skylightDir), 0.0);
 
-    vec3 ambientLight = ambient * skylight.strength;
+    vec3 ambientLight = ambient + skylight.strength;
     return diff * skylight.strength + ambientLight;
 }
 
@@ -66,6 +66,10 @@ void main()
     vec3 norm = normalize(Normal);
 
     vec3 lighting = calculateSkyLight(norm) + calculatePointLights(norm);
+
+    if (lighting[0] > 1.5f) { lighting[0] = 1.5f; }
+    if (lighting[1] > 1.5f) { lighting[1] = 1.5f; }
+    if (lighting[2] > 1.5f) { lighting[2] = 1.5f; }
 
     FragColor = texture(texture1, TexCoord) * vec4(lighting, 1.0);
 }
