@@ -21,6 +21,11 @@ struct PointLightSource {
     float quadratic = 0.032f;
 };
 
+struct SkyLight {
+    glm::vec3 direction;
+    glm::vec3 strength;
+};
+
 class Engine {
 
     public:
@@ -38,7 +43,8 @@ class Engine {
         Display* display;
         Camera* gameCamera;
 
-        PointLightSource randomKid;
+        std::vector<PointLightSource> pointLights;
+        SkyLight skylight;
         std::vector<Block> blocks;
 
         ShaderProgram* currProgram;

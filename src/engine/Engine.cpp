@@ -13,12 +13,13 @@
 #include "../World.h"
 
 Engine::Engine() {
-    this->display = new Display(1280, 720, 60);
+    this->display = new Display(1920, 1080, 60);
     this->gameCamera = new Camera(70.0f, this->display->getWidth() / this->display->getHeight(), 0.1f, 1000.0f);
 
     Block::initBlockTextures();
     this->blocks = World::generateWorld();
     initShaders();
+    SDL_HideCursor();
 }
 
 Engine::~Engine() {
@@ -76,23 +77,23 @@ void Engine::processInputs(float deltaSeconds) {
 
     if (W) {
         this->gameCamera->move(this->gameCamera->getFlatFront() * cameraVelocity);
-        randomKid.position += this->gameCamera->getFlatFront() * cameraVelocity;
-        currProgram->setVec3("light.position", randomKid.position);
+        pointLights[0].position += this->gameCamera->getFlatFront() * cameraVelocity;
+        currProgram->setVec3("lights[0].position", pointLights[0].position);
     }
     if (S) {
         this->gameCamera->move(-this->gameCamera->getFlatFront() * cameraVelocity);
-        randomKid.position += -this->gameCamera->getFlatFront()  * cameraVelocity;
-        currProgram->setVec3("light.position", randomKid.position);
+        pointLights[0].position += -this->gameCamera->getFlatFront()  * cameraVelocity;
+        currProgram->setVec3("lights[0].position", pointLights[0].position);
     }
     if (A) {
         this->gameCamera->move(-this->gameCamera->getRight() * cameraVelocity);
-        randomKid.position += -this->gameCamera->getRight() * cameraVelocity;
-        currProgram->setVec3("light.position", randomKid.position);
+        pointLights[0].position += -this->gameCamera->getRight() * cameraVelocity;
+        currProgram->setVec3("lights[0].position", pointLights[0].position);
     }
     if (D) {
         this->gameCamera->move(this->gameCamera->getRight() * cameraVelocity);
-        randomKid.position += this->gameCamera->getRight() * cameraVelocity;
-        currProgram->setVec3("light.position", randomKid.position);
+        pointLights[0].position += this->gameCamera->getRight() * cameraVelocity;
+        currProgram->setVec3("lights[0].position", pointLights[0].position);
     }
     if (P) {
         std::cout << "x: " << this->gameCamera->getPosition().x << " y: " << this->gameCamera->getPosition().y << " z: " << this->gameCamera->getPosition().z << std::endl;
@@ -100,13 +101,13 @@ void Engine::processInputs(float deltaSeconds) {
     }
     if (SPACE) {
         this->gameCamera->move(this->gameCamera->getUp() * cameraVelocity);
-        randomKid.position += this->gameCamera->getUp() * cameraVelocity;
-        currProgram->setVec3("light.position", randomKid.position);
+        pointLights[0].position += this->gameCamera->getUp() * cameraVelocity;
+        currProgram->setVec3("lights[0].position", pointLights[0].position);
     }
     if (LCTRL) {
         this->gameCamera->move(-this->gameCamera->getUp() * cameraVelocity);
-        randomKid.position += -this->gameCamera->getUp() * cameraVelocity;
-        currProgram->setVec3("light.position", randomKid.position);
+        pointLights[0].position += -this->gameCamera->getUp() * cameraVelocity;
+        currProgram->setVec3("lights[0].position", pointLights[0].position);
     }
     if (RIGHT) {
         this->gameCamera->rotate(0.0f, 1.5f * deltaSeconds);
@@ -140,18 +141,33 @@ void Engine::initShaders() {
     this->currProgram->link();
     this->currProgram->use();
 
-    randomKid = {glm::vec3(0.f, 0.0f, 0.0f), glm::vec3(1.f, 1.f, 1.0f)};
+    this->pointLights.push_back({glm::vec3(0.f, 0.0f, 0.0f), glm::vec3(1.f, 1.f, 1.0f)});
+    this->pointLights.push_back({glm::vec3(15.f, 5.0f, 15.0f), glm::vec3(1.f, 1.f, 1.0f)});
+
+    this->skylight = {glm::vec3(-0.5f, -1.0f, -0.5f), glm::vec3(1.0f, 1.0f, 0.9f)};
 
     // CALL AFTER USE()!!!! AFTER!!!!! I SPENT LIKE FOREVER DEBUGGING THIS
-    this->currProgram->setVec3("light.position", randomKid.position);
+    for (size_t i = 0; i < pointLights.size(); i++)
+    {
+        std::string prefix = "lights[" + std::to_string(i) + "]";
+
+        this->currProgram->setVec3((prefix + ".position").c_str(), pointLights[i].position);
+        this->currProgram->setVec3((prefix + ".diffuse").c_str(), pointLights[i].diffuse);
+
+        this->currProgram->setFloat((prefix + ".strength").c_str(), pointLights[i].strength);
+
+        this->currProgram->setFloat((prefix + ".constant").c_str(), pointLights[i].constant);
+        this->currProgram->setFloat((prefix + ".linear").c_str(), pointLights[i].linear);
+        this->currProgram->setFloat((prefix + ".quadratic").c_str(), pointLights[i].quadratic);
+    }
+
+    this->currProgram->setInt("numPointLights", pointLights.size());
+
+    this->currProgram->setVec3("skylight.direction", skylight.direction);
+    this->currProgram->setVec3("skylight.strength", skylight.strength);
+
     this->currProgram->setMat4("view", gameCamera->getView());
-    this->currProgram->setFloat("light.strength", randomKid.strength);
-    this->currProgram->setVec3("light.diffuse", randomKid.diffuse);
-    this->currProgram->setFloat("light.constant", randomKid.constant);
-    this->currProgram->setFloat("light.linear", randomKid.linear);
-    this->currProgram->setFloat("light.quadratic", randomKid.quadratic);
     this->currProgram->setFloat("ambient", 0.05f);
-    this->currProgram->setFloat("skylight", 0.25f);
 
     glUniform1i(glGetUniformLocation(this->currProgram->getHandle(), "texture1"), 0); // set it manually
 

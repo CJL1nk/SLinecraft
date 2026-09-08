@@ -24,6 +24,8 @@ std::vector<Block> World::generateWorld() {
                 y = ceil(sin((float)x / 2.0f) * sin((float)z / 2.0f) * 4.0f + 4);
                 blockID = 1;
             } else if (z % 10 == 0 || x % 10 == 0) {
+
+
                 blocks.emplace_back(glm::vec3(x, 4, z), 1);
             }
 

@@ -11,7 +11,7 @@ int main() {
 
     while (!quit) {
         pollEvents();
-        engine->update();
+        engine->update(); 
         engine->render();
     }
 

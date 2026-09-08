@@ -1,5 +1,7 @@
 #version 330 core
 
+#define MAX_POINT_LIGHTS 64
+
 struct PointLight {
     vec3 position; // no longer necessary when using directional lights.
 
@@ -12,6 +14,11 @@ struct PointLight {
     float quadratic;
 };
 
+struct SkyLight {
+    vec3 direction;
+    vec3 strength;
+};
+
 out vec4 FragColor;
 
 in vec2 TexCoord;
@@ -19,31 +26,46 @@ in vec3 Normal;
 in vec3 FragPos;
 
 uniform sampler2D texture1;
-uniform PointLight light;
-uniform int numLights;
+uniform PointLight[MAX_POINT_LIGHTS] lights;
+uniform SkyLight skylight;
+uniform int numPointLights;
 uniform float ambient;
 uniform mat4 view;
-uniform float skylight;
 
+vec3 calculateSkyLight(vec3 norm)
+{
+    vec3 skylightDir = normalize(-skylight.direction);
+
+    float diff = max(dot(norm, skylightDir), 0.0);
+
+    vec3 ambientLight = ambient * skylight.strength;
+    return diff * skylight.strength + ambientLight;
+}
+
+vec3 calculatePointLights(vec3 norm)
+{
+    vec3 result = vec3(0.0);
+
+    for (int i = 0; i < numPointLights; i++)
+    {
+        vec3 lightDir = normalize(lights[i].position - FragPos);
+        float distance = length(lights[i].position - FragPos);
+
+        float diff = max(dot(norm, lightDir), 0.0);
+
+        float attenuation = 1.0 / (lights[i].constant + lights[i].linear * distance + lights[i].quadratic * distance * distance);
+
+        result += diff * lights[i].diffuse * lights[i].strength * attenuation;
+    }
+
+    return result;
+}
 
 void main()
 {
     vec3 norm = normalize(Normal);
-    vec3 lightDir = normalize(light.position - FragPos);
 
-    float diff = max(dot(norm, lightDir), 0.0) * light.strength;
+    vec3 lighting = calculateSkyLight(norm) + calculatePointLights(norm);
 
-    float distance = length(light.position - FragPos);
-    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
-
-    float lighting = diff * attenuation + ambient + skylight;
-
-    FragColor = texture(texture1, TexCoord) * lighting * vec4(light.diffuse, 1.0f);
-}
-
-float calculatePointLights(PointLight light, vec3 normal, vec3 fragPos)
-{
-    float lighting = 0.0f;
-
-    return lighting;
+    FragColor = texture(texture1, TexCoord) * vec4(lighting, 1.0);
 }

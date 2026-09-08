@@ -21,7 +21,7 @@ Display::~Display() {
 }
 
 void Display::render() {
-    glClearColor(0.f, 0.03f, 0.05f, 1.0f);
+    glClearColor(0.5f, 1.f, 1.f, 1.0f);
     SDL_GL_SwapWindow(this->window);
 }
 
