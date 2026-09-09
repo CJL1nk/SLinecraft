@@ -9,6 +9,7 @@
 #include "render/Display.h"
 #include "../Block.h"
 #include "render/ShaderProgram.h"
+#include "src/World.h"
 
 struct PointLightSource {
     glm::vec3 position;
@@ -45,7 +46,7 @@ class Engine {
 
         std::vector<PointLightSource> pointLights;
         SkyLight skylight;
-        std::vector<Block> blocks;
+        World* world;
 
         ShaderProgram* currProgram;
 

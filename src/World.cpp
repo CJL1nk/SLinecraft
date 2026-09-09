@@ -6,7 +6,16 @@
 
 #include <iostream>
 
-std::vector<Block> World::generateWorld() {
+void World::addBlock(const Block& block) {
+    this->blocks.emplace_back(block);
+}
+
+std::vector<Block>* World::getBlocks() {
+    return &this->blocks;
+}
+
+
+void World::generateWorld() {
 
     int totalBlocks = 0;
     std::vector<Block> blocks;
@@ -37,5 +46,5 @@ std::vector<Block> World::generateWorld() {
     }
 
     std::cout << "Generated world with " << totalBlocks << " blocks" << std::endl;
-    return blocks;
+    this->blocks = blocks;
 }

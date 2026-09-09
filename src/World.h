@@ -17,11 +17,20 @@ class World {
     public:
         int seed; //
 
+        World(int seed) : seed(seed) { generateWorld(); };
+
+        void addBlock(const Block& block);
+
+        std::vector<Block>* getBlocks();
+
+    private:
+        std::vector<Block> blocks;
+
         /**
          * Returns an array of blocks
          * @return An array of blocks
          */
-        static std::vector<Block> generateWorld();
+        void generateWorld();
 };
 
 

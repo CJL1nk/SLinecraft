@@ -14,10 +14,10 @@
 
 Engine::Engine() {
     this->display = new Display(1920, 1080, 60);
-    this->gameCamera = new Camera(70.0f, this->display->getWidth() / this->display->getHeight(), 0.1f, 1000.0f);
+    this->gameCamera = new Camera(80.0f, this->display->getWidth() / this->display->getHeight(), 0.1f, 1000.0f);
 
     Block::initBlockTextures();
-    this->blocks = World::generateWorld();
+    this->world = new World(80085);
     initShaders();
     SDL_HideCursor();
 }
@@ -27,8 +27,8 @@ Engine::~Engine() {
     delete this->gameCamera;
 
     // Delete all textures when done with them please!!!!!!!!!!!!
-    for (int i = 0; i < blocks.size(); i++) {
-        Object& current = blocks[i];
+    for (int i = 0; i < this->world->getBlocks()->size(); i++) {
+        Object& current = this->world->getBlocks()->at(i);
         current.getTexture()->deleteTexture();
     }
 
@@ -57,9 +57,9 @@ void Engine::update() {
     glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(this->gameCamera->getView()));
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    for (int i = 0; i < blocks.size(); i++) {
-        glBindTexture(GL_TEXTURE_2D, blocks[i].getTexture()->getHandle());
-        Object& current = blocks[i];
+    for (int i = 0; i < this->world->getBlocks()->size(); i++) {
+        glBindTexture(GL_TEXTURE_2D, this->world->getBlocks()->at(i).getTexture()->getHandle());
+        Object& current = this->world->getBlocks()->at(i);
 
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(current.getModelMatrix()));
         glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -73,7 +73,7 @@ void Engine::render() const {
 void Engine::processInputs(float deltaSeconds) {
 
     float cameraVelocity = this->gameCamera->getSpeed() * deltaSeconds;
-    const float mouseSensitivity = 0.5f;
+    const float mouseSensitivity = 1.f;
 
     if (W) {
         this->gameCamera->move(this->gameCamera->getFlatFront() * cameraVelocity);
@@ -97,7 +97,7 @@ void Engine::processInputs(float deltaSeconds) {
     }
     if (P) {
         std::cout << "x: " << this->gameCamera->getPosition().x << " y: " << this->gameCamera->getPosition().y << " z: " << this->gameCamera->getPosition().z << std::endl;
-        blocks.push_back(Block(glm::vec3(this->gameCamera->getPosition().x, this->gameCamera->getPosition().y - 1.0f, this->gameCamera->getPosition().z), 1));
+        this->world->addBlock(Block(glm::vec3(this->gameCamera->getPosition().x, this->gameCamera->getPosition().y - 1.0f, this->gameCamera->getPosition().z), 1));
     }
     if (SPACE) {
         this->gameCamera->move(this->gameCamera->getUp() * cameraVelocity);
@@ -145,7 +145,7 @@ void Engine::initShaders() {
     this->pointLights.push_back({glm::vec3(15.f, 5.0f, 15.0f), glm::vec3(1.f, 1.f, 1.0f)});
     this->pointLights.push_back({glm::vec3(15.f, 5.0f, -15.0f), glm::vec3(1.f, 1.f, 1.0f)});
 
-    this->skylight = {glm::vec3(-0.5f, -1.0f, -0.5f), glm::vec3(0.5f, 0.5f, 0.5f)};
+    this->skylight = {glm::vec3(-0.5f, -1.0f, -0.5f), glm::vec3(0.01f, 0.0f, 0.03f)};
 
     // CALL AFTER USE()!!!! AFTER!!!!! I SPENT LIKE FOREVER DEBUGGING THIS
     for (size_t i = 0; i < pointLights.size(); i++)
@@ -184,7 +184,7 @@ void Engine::initShaders() {
     unsigned int VBO;
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, blocks[0].getVertexCount() * sizeof(float), blocks[0].getVertices(), GL_STATIC_DRAW); // Hack, but it works
+    glBufferData(GL_ARRAY_BUFFER, this->world->getBlocks()->at(0).getVertexCount() * sizeof(float), this->world->getBlocks()->at(0).getVertices(), GL_STATIC_DRAW); // Hack, but it works
 
     glVertexAttribPointer(0, 3,GL_FLOAT, GL_FALSE, 8 * sizeof(float), nullptr);
     glEnableVertexAttribArray(0);

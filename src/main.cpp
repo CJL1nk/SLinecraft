@@ -9,6 +9,8 @@ int main() {
 
     Engine* engine = new Engine();
 
+    SDL_HideCursor();
+
     while (!quit) {
         pollEvents();
         engine->update(); 
