@@ -11,30 +11,54 @@
 class Display {
 
 public:
+    /**
+     * Initializes a window with OpenGL context
+     * @param width Window width
+     * @param height Window height
+     * @param target_framerate Framerate
+     */
     Display(int width, int height, int target_framerate);
     ~Display();
 
-    void render();
-
-    void centerMouse();
-
-    [[nodiscard]] float getWidth() const { return this->width; };
-    [[nodiscard]] float getHeight() const { return this->height; };
-    [[nodiscard]] int getTargetFramerate() const { return this->targetFramerate; };
-
-        /**
-     * Initializes an SDL Window that uses OpenGL.
-     * @param width Width of window
-     * @param height Height on window
-     * @return Pointer to window object
+    /**
+     * Draws to the window
      */
-    static SDL_Window* createWindow(uint16_t width, uint16_t height);
+    void render() const;
+
+    /**
+     * Centers your mouse within the window
+     */
+    void centerMouse() const;
+
+    /**
+     * Returns window width
+     * @return Window width
+     */
+    [[nodiscard]] float getWidth() const { return this->width; };
+    /**
+     * Returns window height
+     * @return Window height
+     */
+    [[nodiscard]] float getHeight() const { return this->height; };
+    /**
+     * Returns window framerate
+     * @return Window framerate
+     */
+    [[nodiscard]] int getTargetFramerate() const { return this->targetFramerate; };
 
 private:
     float width;
     float height;
     int targetFramerate = 60;
     SDL_Window* window;
+
+    /**
+     * Initializes an SDL Window that uses OpenGL.
+     * @param width Width of window
+     * @param height Height on window
+     * @return Pointer to window object
+     */
+    static SDL_Window* createWindow(uint16_t width, uint16_t height);
 };
 
 

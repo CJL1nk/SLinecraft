@@ -22,6 +22,9 @@ inline bool LEFT = false;
 inline bool UP = false;
 inline bool DOWN = false;
 
+/**
+ * Polls sdl events and keypress data
+ */
 void pollEvents();
 
 #endif //SLINECRAFT_EVENT_H

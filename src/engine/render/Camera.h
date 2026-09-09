@@ -71,6 +71,10 @@ class Camera {
          * @return Camera position vector
          */
         [[nodiscard]] glm::vec3 getPosition() const;
+        /**
+         * Returns camera speed
+         * @return Camera speed
+         */
         [[nodiscard]] float getSpeed() const;
 
     private:

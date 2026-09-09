@@ -30,7 +30,7 @@ void Shader::compile() {
     this->handle = shader;
 }
 
-void Shader::deleteShader() {
+void Shader::deleteShader() const {
     glDeleteShader(this->handle);
 }
 

@@ -20,12 +20,12 @@ Display::~Display() {
     SDL_DestroyWindow(this->window);
 }
 
-void Display::render() {
+void Display::render() const {
     glClearColor(0.5f, 1.f, 1.f, 1.0f);
     SDL_GL_SwapWindow(this->window);
 }
 
-void Display::centerMouse() {
+void Display::centerMouse() const {
     SDL_WarpMouseInWindow(this->window, this->width / 2, this->height / 2);
 }
 

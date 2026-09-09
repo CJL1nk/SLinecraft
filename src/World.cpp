@@ -30,7 +30,7 @@ void World::generateWorld() {
             }
 
             if (abs(x) >= 37) {
-                y = ceil(sin((float)x / 2.0f) * sin((float)z / 2.0f) * 4.0f + 4);
+                y = ceilf(sinf((float)x / 2.0f) * sinf((float)z / 2.0f) * 4.0f + 4);
                 blockID = 1;
             } else if (z % 10 == 0 || x % 10 == 0) {
 

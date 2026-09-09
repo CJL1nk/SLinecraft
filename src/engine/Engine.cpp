@@ -15,6 +15,7 @@
 Engine::Engine() {
     this->display = new Display(1920, 1080, 60);
     this->gameCamera = new Camera(80.0f, this->display->getWidth() / this->display->getHeight(), 0.1f, 1000.0f);
+    this->gameCamera->move(glm::vec3(0.0f, 5.0f, 0.0f));
 
     Block::initBlockTextures();
     this->world = new World(80085);
@@ -46,10 +47,10 @@ void Engine::update() {
     SDL_Time currentFrame;
     SDL_GetCurrentTime(&currentFrame);
 
-    SDL_Time deltaTime = currentFrame - this->lastFrame;
+    const SDL_Time deltaTime = currentFrame - this->lastFrame;
     this->lastFrame = currentFrame;
 
-    float deltaSeconds = (float)deltaTime / 10000000.0f;
+    const float deltaSeconds = (float)deltaTime / 10000000.0f;
 
     processInputs(deltaSeconds);
 
@@ -70,10 +71,10 @@ void Engine::render() const {
     this->display->render();
 }
 
-void Engine::processInputs(float deltaSeconds) {
+void Engine::processInputs(const float deltaSeconds) {
 
-    float cameraVelocity = this->gameCamera->getSpeed() * deltaSeconds;
-    const float mouseSensitivity = 1.f;
+    const float cameraVelocity = this->gameCamera->getSpeed() * deltaSeconds;
+    constexpr float mouseSensitivity = 1.f;
 
     if (W) {
         this->gameCamera->move(this->gameCamera->getFlatFront() * cameraVelocity);
@@ -141,9 +142,9 @@ void Engine::initShaders() {
     this->currProgram->link();
     this->currProgram->use();
 
-    this->pointLights.push_back({glm::vec3(0.f, 0.0f, 0.0f), glm::vec3(1.f, 1.f, 1.0f)});
-    this->pointLights.push_back({glm::vec3(15.f, 5.0f, 15.0f), glm::vec3(1.f, 1.f, 1.0f)});
-    this->pointLights.push_back({glm::vec3(15.f, 5.0f, -15.0f), glm::vec3(1.f, 1.f, 1.0f)});
+    this->pointLights.push_back({glm::vec3(0.f, 5.0f, 0.0f), glm::vec3(1.f, 1.f, 1.0f)});
+    this->pointLights.push_back({glm::vec3(15.f, 1.0f, 15.0f), glm::vec3(1.f, 1.f, 1.0f)});
+    this->pointLights.push_back({glm::vec3(15.f, 1.0f, -15.0f), glm::vec3(1.f, 1.f, 1.0f)});
 
     this->skylight = {glm::vec3(-0.5f, -1.0f, -0.5f), glm::vec3(0.01f, 0.0f, 0.03f)};
 

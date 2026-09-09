@@ -30,17 +30,28 @@ struct SkyLight {
 class Engine {
 
     public:
+        /**
+         * Initializes the game engine and loads relevant pieces
+         */
         Engine();
         ~Engine();
 
+        /**
+         * Ticks and updates the interneal engine state
+         */
         void update();
+        /**
+         * Renders the game to the screen
+         */
         void render() const;
 
+        /**
+         * Processes the inputs updated by pollEvents() and updates the engine state
+         * @param deltaSeconds Seconds since the last engine update
+         */
         void processInputs(float deltaSeconds);
 
     private:
-        void initShaders();
-
         Display* display;
         Camera* gameCamera;
 
@@ -51,6 +62,11 @@ class Engine {
         ShaderProgram* currProgram;
 
         signed long int lastFrame = 0;
+
+        /**
+         * Initializes shaders and does some other stuff it shouldn't do but I don't care right now
+         */
+        void initShaders();
 };
 
 

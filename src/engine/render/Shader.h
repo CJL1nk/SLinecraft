@@ -30,7 +30,7 @@ class Shader {
         /**
          * Deletes a shader from GPU memory (safe to call after shader has been compiled)
          */
-        void deleteShader();
+        void deleteShader() const;
 
         /**
          * Returns the handle of current shader object
